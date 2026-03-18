@@ -20,15 +20,11 @@
       align-items: center;
     }
 
-    #stars-canvas {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-    }
+    #stars-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
     .show-header {
       position: relative; z-index: 1;
-      text-align: center;
-      padding: 40px 20px 16px;
+      text-align: center; padding: 38px 20px 14px;
     }
     .show-header h1 {
       font-family: 'Dancing Script', cursive;
@@ -36,77 +32,61 @@
       background: linear-gradient(135deg, #ff9ed2, #c770f0, #ffd700);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       filter: drop-shadow(0 0 18px rgba(199,112,240,0.6));
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
-    .show-header p { color: #d0a0e8; font-size: clamp(0.8rem, 1.8vw, 0.95rem); font-weight: 600; }
+    .show-header p { color: #d0a0e8; font-size: clamp(0.78rem, 1.8vw, 0.92rem); font-weight: 600; }
 
-    /* mosaic container uses absolute positioning */
     .mosaic-wrap {
       position: relative; z-index: 1;
       padding: 16px 20px;
       display: flex; justify-content: center;
     }
-    #mosaic-stage {
-      position: relative;
-      /* width & height set by JS */
-    }
+    #mosaic-stage { position: relative; }
 
-    /* individual photo cell */
     .photo-cell {
       position: absolute;
       overflow: hidden;
       cursor: pointer;
-      /* size & position set by JS */
       opacity: 0;
-      transform: scale(0.3) rotate(10deg);
+      transform: scale(0.25) rotate(12deg);
       transition: box-shadow 0.25s;
     }
     .photo-cell.visible {
-      animation: cellPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation: cellPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
     @keyframes cellPop {
-      0%   { opacity: 0; transform: scale(0.3) rotate(10deg); }
-      70%  { opacity: 1; transform: scale(1.08) rotate(-2deg); }
-      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      0%   { opacity: 0; transform: scale(0.25) rotate(12deg); }
+      65%  { opacity: 1; transform: scale(1.1)  rotate(-2deg); }
+      100% { opacity: 1; transform: scale(1)    rotate(0deg); }
     }
-
     .photo-cell img {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
       transition: transform 0.35s ease;
     }
-    .photo-cell:hover img { transform: scale(1.12); }
-
-    /* glow ring on hover */
+    .photo-cell:hover img { transform: scale(1.14); }
     .photo-cell::after {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       border-radius: inherit;
-      box-shadow: inset 0 0 0 1.5px rgba(255,150,220,0.3);
-      transition: box-shadow 0.25s;
-      pointer-events: none;
+      box-shadow: inset 0 0 0 1.5px rgba(255,150,220,0.28);
+      transition: box-shadow 0.25s; pointer-events: none;
     }
     .photo-cell:hover::after {
-      box-shadow: inset 0 0 0 2px rgba(255,107,157,1),
-                  0 0 16px rgba(255,107,157,0.6);
+      box-shadow: inset 0 0 0 2px rgba(255,107,157,1), 0 0 18px rgba(255,107,157,0.6);
     }
-
-    /* flip-in for photo swap */
     .photo-cell.swapping {
-      animation: cellSwap 0.5s ease forwards;
+      animation: cellSwap 0.38s ease forwards;
     }
     @keyframes cellSwap {
-      0%   { transform: scale(1) rotateY(0deg);   opacity: 1; }
-      40%  { transform: scale(0.85) rotateY(90deg); opacity: 0.3; }
-      100% { transform: scale(1) rotateY(0deg);   opacity: 1; }
+      0%   { transform: scale(1)    rotateY(0);   opacity: 1; }
+      45%  { transform: scale(0.82) rotateY(90deg); opacity: 0.25; }
+      100% { transform: scale(1)    rotateY(0);   opacity: 1; }
     }
 
-    /* controls */
     .controls {
       position: relative; z-index: 1;
       display: flex; gap: 12px; flex-wrap: wrap;
-      justify-content: center;
-      padding: 20px 20px 8px;
+      justify-content: center; padding: 18px 20px 8px;
     }
     .btn {
       padding: 12px 24px; border: none; border-radius: 50px;
@@ -116,68 +96,33 @@
     }
     .btn:hover  { transform: translateY(-2px); filter: brightness(1.12); }
     .btn:active { transform: translateY(0); }
-    .btn-shuffle {
-      background: linear-gradient(135deg, #ff6b9d, #c770f0);
-      color: white; box-shadow: 0 4px 20px rgba(199,112,240,0.4);
-    }
-    .btn-auto {
-      background: rgba(255,255,255,0.1); color: #e0b0f8;
-      border: 1.5px solid rgba(199,112,240,0.4);
-    }
-    .btn-auto.active {
-      background: linear-gradient(135deg, #7c3aed, #4f1d96);
-      color: white; border-color: transparent;
-      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
-    }
-    .btn-back {
-      background: rgba(255,255,255,0.07); color: #c0a0d8;
-      border: 1.5px solid rgba(255,255,255,0.12);
-    }
+    .btn-shuffle { background: linear-gradient(135deg,#ff6b9d,#c770f0); color: white; box-shadow: 0 4px 20px rgba(199,112,240,0.4); }
+    .btn-auto    { background: rgba(255,255,255,0.1); color: #e0b0f8; border: 1.5px solid rgba(199,112,240,0.4); }
+    .btn-auto.active { background: linear-gradient(135deg,#7c3aed,#4f1d96); color: white; border-color: transparent; box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
+    .btn-back    { background: rgba(255,255,255,0.07); color: #c0a0d8; border: 1.5px solid rgba(255,255,255,0.12); }
 
-    .show-note {
-      position: relative; z-index: 1;
-      color: #5a3880; font-size: 0.75rem;
-      padding: 12px 20px 24px; text-align: center;
-    }
+    .show-note { position: relative; z-index: 1; color: #5a3880; font-size: 0.75rem; padding: 10px 20px 22px; text-align: center; }
 
-    /* tooltip */
     .cell-tooltip {
-      position: fixed;
-      background: rgba(15,0,35,0.94); color: white;
-      border-radius: 10px; padding: 7px 13px;
-      font-size: 0.8rem; font-weight: 700;
-      pointer-events: none; z-index: 200;
-      border: 1px solid rgba(199,112,240,0.4);
+      position: fixed; background: rgba(15,0,35,0.94); color: white;
+      border-radius: 10px; padding: 7px 13px; font-size: 0.8rem; font-weight: 700;
+      pointer-events: none; z-index: 200; border: 1px solid rgba(199,112,240,0.4);
       white-space: nowrap; opacity: 0; transition: opacity 0.15s;
     }
 
-    /* lightbox */
-    .lightbox {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.9); z-index: 1000;
-      align-items: center; justify-content: center; padding: 20px;
-    }
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .lightbox.open { display: flex; }
     .lb-inner { position: relative; max-width: 90vw; }
     .lb-inner img { max-width: 100%; max-height: 82vh; border-radius: 16px; display: block; box-shadow: 0 0 40px rgba(199,112,240,0.5); }
-    .lb-close {
-      position: absolute; top: -14px; right: -14px;
-      background: white; border: none; border-radius: 50%;
-      width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; color: #333;
-    }
+    .lb-close { position: absolute; top: -14px; right: -14px; background: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333; }
     .lb-caption { text-align: center; color: #e0b0f8; margin-top: 10px; font-weight: 700; font-size: 0.88rem; }
 
-    .loading-msg {
-      position: relative; z-index: 1;
-      text-align: center; padding: 80px 20px; color: #b090d8;
-    }
+    .loading-msg { position: relative; z-index: 1; text-align: center; padding: 80px 20px; color: #b090d8; }
     .spin { font-size: 2.4rem; display: inline-block; animation: spin 1.2s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-
 <canvas id="stars-canvas"></canvas>
 
 <div class="show-header">
@@ -185,9 +130,7 @@
   <p>💕 Những khoảnh khắc yêu thương ghép lại thành tên em 💕</p>
 </div>
 
-<div class="mosaic-wrap">
-  <div id="mosaic-stage"></div>
-</div>
+<div class="mosaic-wrap"><div id="mosaic-stage"></div></div>
 
 <div id="loading-msg" class="loading-msg">
   <div class="spin">🌸</div>
@@ -196,10 +139,9 @@
 
 <div class="controls" id="controls" style="display:none">
   <button class="btn btn-shuffle" id="btn-shuffle">🔀 Shuffle</button>
-  <button class="btn btn-auto"    id="btn-auto">▶ Tự động</button>
+  <button class="btn btn-auto"    id="btn-auto">⏸ Dừng</button>
   <button class="btn btn-back"    onclick="location.href='index.html'">← Quay lại</button>
 </div>
-
 <div class="show-note" id="show-note" style="display:none"></div>
 
 <div class="cell-tooltip" id="cell-tooltip"></div>
@@ -214,32 +156,35 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ── Letter pixel maps (10 rows) ────────────────────────────────────────────
+// ── BOLDER letter pixel maps (10 rows) ────────────────────────────────────
+// C: 7 cols, bold 2-cell stroke
 const MAPS = {
   C: [
-    [0,1,1,1,1,0],
-    [1,1,0,0,1,1],
-    [1,1,0,0,0,0],
-    [1,0,0,0,0,0],
-    [1,0,0,0,0,0],
-    [1,0,0,0,0,0],
-    [1,0,0,0,0,0],
-    [1,1,0,0,0,0],
-    [1,1,0,0,1,1],
-    [0,1,1,1,1,0],
+    [0,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1],
+    [1,1,1,0,0,0,0],
+    [1,1,0,0,0,0,0],
+    [1,1,0,0,0,0,0],
+    [1,1,0,0,0,0,0],
+    [1,1,0,0,0,0,0],
+    [1,1,1,0,0,0,0],
+    [1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,0],
   ],
+  // H: 7 cols, bold 2-cell stroke on sides, double crossbar
   H: [
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
-    [1,1,1,1,1,1],
-    [1,1,1,1,1,1],
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
-    [1,0,0,0,0,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
+    [1,1,0,0,0,1,1],
   ],
+  // I: 4 cols, same
   I: [
     [1,1,1,1],
     [0,1,1,0],
@@ -254,21 +199,18 @@ const MAPS = {
   ],
 };
 
-// Col offsets: C at 0, H at 7, I at 14
-const OFFSETS = { C: 0, H: 7, I: 14 };
-const ROWS = 10, TOTAL_COLS = 18;
+// Layout: C(0-6=7cols) gap(7) H(8-14=7cols) gap(15) I(16-19=4cols) → 20 total cols
+const OFFSETS     = { C: 0, H: 8, I: 16 };
+const TOTAL_COLS  = 20;
+const ROWS        = 10;
 
-// Build ordered list of cells: C cells first, then H, then I
-// Within each letter: top-to-bottom, left-to-right
-const allCells = []; // { row, col, letter }
+// Build ordered cell list: C → H → I, each letter top-to-bottom left-to-right
+const allCells = [];
 ['C','H','I'].forEach(letter => {
-  const map = MAPS[letter];
-  const off = OFFSETS[letter];
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < map[r].length; c++) {
+  const map = MAPS[letter], off = OFFSETS[letter];
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < map[r].length; c++)
       if (map[r][c]) allCells.push({ row: r, col: c + off, letter });
-    }
-  }
 });
 
 // ── Supabase ───────────────────────────────────────────────────────────────
@@ -278,188 +220,179 @@ const sb = window.supabase.createClient(
 );
 
 // ── State ──────────────────────────────────────────────────────────────────
-let photos = [];
-let photoQueue = [];   // shuffled queue — use all before repeating
-let cellEls = [];      // DOM elements, parallel to allCells
-let autoTimer = null;
-let swapCycle = null;
-let buildDone = false;
+let photos      = [];
+let photoQueue  = [];   // shuffled — use all before repeating
+let cellEls     = [];   // DOM divs, index matches allCells
+let cellPhotos  = [];   // current photo for each cell
+let swapCycle   = null;
+let buildDone   = false;
 
-// ── Photo queue (use all before repeat) ───────────────────────────────────
-function fillQueue() {
-  // Fisher-Yates shuffle into queue
-  const arr = photos.map((_, i) => i);
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+// ── Photo queue: use all photos before repeating ───────────────────────────
+function refillQueue() {
+  const arr = photos.map((_,i) => i);
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
   }
   photoQueue = arr;
 }
 function nextPhoto() {
-  if (photoQueue.length === 0) fillQueue();
+  if (photoQueue.length === 0) refillQueue();
   return photos[photoQueue.shift()];
 }
 
-// ── Layout ─────────────────────────────────────────────────────────────────
+// ── Compute cell size responsively ────────────────────────────────────────
 function computeCell() {
-  const maxW = Math.min(window.innerWidth - 32, 1100);
-  const size = Math.max(20, Math.floor(maxW / TOTAL_COLS) - 2);
-  const gap  = Math.max(2, Math.round(size * 0.08));
+  const maxW = Math.min(window.innerWidth - 28, 1100);
+  const size  = Math.max(18, Math.floor(maxW / TOTAL_COLS) - 2);
+  const gap   = Math.max(2, Math.round(size * 0.08));
   return { size, gap };
 }
 
-// ── Build mosaic DOM ───────────────────────────────────────────────────────
+// ── Build the stage: create all cell divs ─────────────────────────────────
 function buildStage() {
   const stage = document.getElementById('mosaic-stage');
-  stage.innerHTML = '';
-  cellEls = [];
+  stage.innerHTML = ''; cellEls = []; cellPhotos = [];
 
   const { size, gap } = computeCell();
-  const stageW = TOTAL_COLS * size + (TOTAL_COLS - 1) * gap;
-  const stageH = ROWS       * size + (ROWS       - 1) * gap;
-  stage.style.width  = stageW + 'px';
-  stage.style.height = stageH + 'px';
-
+  stage.style.width  = (TOTAL_COLS * size + (TOTAL_COLS-1) * gap) + 'px';
+  stage.style.height = (ROWS       * size + (ROWS-1)       * gap) + 'px';
   const radius = Math.max(4, Math.round(size * 0.15)) + 'px';
 
-  allCells.forEach(fc => {
+  allCells.forEach((fc, i) => {
     const el = document.createElement('div');
     el.className = 'photo-cell';
-    el.style.width        = size + 'px';
-    el.style.height       = size + 'px';
-    el.style.borderRadius = radius;
-    el.style.left = (fc.col * (size + gap)) + 'px';
-    el.style.top  = (fc.row * (size + gap)) + 'px';
-
+    el.style.cssText = `
+      width:${size}px; height:${size}px; border-radius:${radius};
+      left:${fc.col*(size+gap)}px; top:${fc.row*(size+gap)}px;
+    `;
+    el.dataset.idx = i;
     const img = document.createElement('img');
     img.loading = 'lazy';
     el.appendChild(img);
     stage.appendChild(el);
     cellEls.push(el);
+    cellPhotos.push(null);
   });
 
-  return { size, gap };
+  // Event delegation on stage
+  stage.addEventListener('click', e => {
+    const cell = e.target.closest('.photo-cell');
+    if (!cell) return;
+    const idx = parseInt(cell.dataset.idx);
+    if (!isNaN(idx) && cellPhotos[idx]) openLb(cellPhotos[idx]);
+  });
+  stage.addEventListener('mouseover', e => {
+    const cell = e.target.closest('.photo-cell');
+    if (!cell) return;
+    const idx = parseInt(cell.dataset.idx);
+    if (!isNaN(idx) && cellPhotos[idx]) showTip(e, cellPhotos[idx]);
+  });
+  stage.addEventListener('mousemove', e => moveTip(e));
+  stage.addEventListener('mouseout',  e => {
+    if (!e.target.closest('.photo-cell')) hideTip();
+  });
 }
 
-// ── Animate build: letter by letter ───────────────────────────────────────
+// ── Set photo on a specific cell ──────────────────────────────────────────
+function setCellPhoto(idx, p) {
+  cellPhotos[idx] = p;
+  const img = cellEls[idx].querySelector('img');
+  img.src = p.url;
+}
+
+// ── Animate build: C → H → I, each cell pops in order ────────────────────
+const DELAY_PER_CELL = 20;   // ms — 3× faster than original 60ms
+const LETTER_PAUSE   = 100;  // ms pause between letters
+
 function animateBuild(onDone) {
-  fillQueue();
+  refillQueue();
+  let t = 0, prevLetter = null;
 
-  // Assign one photo per cell from queue, letter order
-  const DELAY_PER_CELL = 60; // ms between each cell popping in
-  const LETTER_PAUSE   = 300; // extra pause between letters
-
-  let t = 0;
-  let prevLetter = null;
-
-  cellEls.forEach((el, i) => {
-    const fc  = allCells[i];
-    const img = el.querySelector('img');
-    const p   = nextPhoto();
-    img.src   = p.url;
-    bindCell(el, p);
+  allCells.forEach((fc, i) => {
+    const p = nextPhoto();
+    setCellPhoto(i, p);
 
     if (prevLetter && fc.letter !== prevLetter) t += LETTER_PAUSE;
     prevLetter = fc.letter;
 
-    setTimeout(() => {
-      el.classList.add('visible');
-    }, t);
-
+    const delay = t;
+    setTimeout(() => cellEls[i].classList.add('visible'), delay);
     t += DELAY_PER_CELL;
   });
 
-  setTimeout(() => {
-    buildDone = true;
-    onDone();
-  }, t + 400);
+  const total = t + 400;
+  setTimeout(() => { buildDone = true; onDone(); }, total);
 }
 
-// ── Swap a single cell's photo ─────────────────────────────────────────────
-function swapCell(idx) {
+// ── Swap one cell photo ───────────────────────────────────────────────────
+let swapQueue2 = [];
+function swapOne() {
+  if (!buildDone) return;
+  if (swapQueue2.length === 0) {
+    // visit all cells in random order before repeating
+    swapQueue2 = cellEls.map((_,i) => i);
+    for (let i = swapQueue2.length-1; i > 0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [swapQueue2[i],swapQueue2[j]] = [swapQueue2[j],swapQueue2[i]];
+    }
+  }
+  const idx = swapQueue2.shift();
   const el  = cellEls[idx];
-  const img = el.querySelector('img');
   const p   = nextPhoto();
 
   el.classList.remove('swapping');
-  void el.offsetWidth; // reflow
+  void el.offsetWidth;
   el.classList.add('swapping');
-
   setTimeout(() => {
-    img.src = p.url;
-    bindCell(el, p);
+    setCellPhoto(idx, p);
     el.classList.remove('swapping');
-  }, 200);
+  }, 190);
 }
 
-// ── Bind tooltip + lightbox to a cell ─────────────────────────────────────
-function bindCell(el, p) {
-  const clone = el.cloneNode(false);
-  clone.appendChild(el.querySelector('img'));
-  el.replaceWith(clone);
-  cellEls[cellEls.indexOf(el)] = clone;
-
-  clone.addEventListener('mouseenter', e => showTip(e, p));
-  clone.addEventListener('mousemove',  e => moveTip(e));
-  clone.addEventListener('mouseleave', hideTip);
-  clone.addEventListener('click',      () => openLb(p));
-}
-
-// ── Shuffle all at once ────────────────────────────────────────────────────
+// ── Shuffle all instantly ─────────────────────────────────────────────────
 function shuffleAll() {
-  fillQueue();
-  cellEls.forEach((_, i) => {
-    setTimeout(() => swapCell(i), i * 20);
+  refillQueue();
+  cellEls.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.remove('swapping');
+      void el.offsetWidth;
+      el.classList.add('swapping');
+      const p = nextPhoto();
+      setTimeout(() => { setCellPhoto(i, p); el.classList.remove('swapping'); }, 190);
+    }, i * 7);
   });
 }
 
-// ── Auto-swap: one random cell at a time ──────────────────────────────────
-let swapQueue = [];
-function startAutoSwap() {
-  if (swapQueue.length === 0) {
-    // randomize cell order
-    swapQueue = cellEls.map((_, i) => i);
-    for (let i = swapQueue.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [swapQueue[i], swapQueue[j]] = [swapQueue[j], swapQueue[i]];
-    }
-  }
-  const idx = swapQueue.shift();
-  swapCell(idx);
-}
-
-// ── Controls ───────────────────────────────────────────────────────────────
+// ── Controls ──────────────────────────────────────────────────────────────
 document.getElementById('btn-shuffle').addEventListener('click', () => {
-  if (!buildDone) return;
-  shuffleAll();
+  if (buildDone) shuffleAll();
 });
 
-document.getElementById('btn-auto').addEventListener('click', () => {
-  if (!buildDone) return;
-  const btn = document.getElementById('btn-auto');
-  if (swapCycle) {
-    clearInterval(swapCycle); swapCycle = null;
-    btn.classList.remove('active'); btn.textContent = '▶ Tự động';
-  } else {
-    swapCycle = setInterval(startAutoSwap, 800);
-    btn.classList.add('active'); btn.textContent = '⏸ Dừng';
-  }
-});
+const btnAuto = document.getElementById('btn-auto');
+function startAuto() {
+  swapCycle = setInterval(swapOne, 400); // 3× faster: was 1200ms
+  btnAuto.classList.add('active'); btnAuto.textContent = '⏸ Dừng';
+}
+function stopAuto() {
+  clearInterval(swapCycle); swapCycle = null;
+  btnAuto.classList.remove('active'); btnAuto.textContent = '▶ Tự động';
+}
+btnAuto.addEventListener('click', () => swapCycle ? stopAuto() : startAuto());
 
-// ── Tooltip ────────────────────────────────────────────────────────────────
+// ── Tooltip ───────────────────────────────────────────────────────────────
 const tooltip = document.getElementById('cell-tooltip');
 function showTip(e, p) {
   tooltip.textContent = p.message ? `${p.name} — "${p.message}"` : p.name;
-  tooltip.style.opacity = '1';
-  moveTip(e);
+  tooltip.style.opacity = '1'; moveTip(e);
 }
 function moveTip(e) {
-  tooltip.style.left = (e.clientX + 14) + 'px';
-  tooltip.style.top  = (e.clientY - 40) + 'px';
+  tooltip.style.left = (e.clientX+14)+'px';
+  tooltip.style.top  = (e.clientY-42)+'px';
 }
 function hideTip() { tooltip.style.opacity = '0'; }
 
-// ── Lightbox ───────────────────────────────────────────────────────────────
+// ── Lightbox ──────────────────────────────────────────────────────────────
 const lightbox = document.getElementById('lightbox');
 function openLb(p) {
   document.getElementById('lb-img').src = p.url;
@@ -467,20 +400,34 @@ function openLb(p) {
   lightbox.classList.add('open');
 }
 document.getElementById('lb-close').addEventListener('click', () => lightbox.classList.remove('open'));
-lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+lightbox.addEventListener('click', e => { if (e.target===lightbox) lightbox.classList.remove('open'); });
 
-// ── Init ───────────────────────────────────────────────────────────────────
+// ── Resize ────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  if (!cellEls.length) return;
+  const { size, gap } = computeCell();
+  const stage = document.getElementById('mosaic-stage');
+  stage.style.width  = (TOTAL_COLS*size+(TOTAL_COLS-1)*gap)+'px';
+  stage.style.height = (ROWS*size+(ROWS-1)*gap)+'px';
+  const radius = Math.max(4,Math.round(size*0.15))+'px';
+  cellEls.forEach((el,i) => {
+    const fc = allCells[i];
+    el.style.width  = size+'px'; el.style.height = size+'px';
+    el.style.borderRadius = radius;
+    el.style.left = (fc.col*(size+gap))+'px';
+    el.style.top  = (fc.row*(size+gap))+'px';
+  });
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────
 async function init() {
-  const { data } = await sb.from('photos').select('*').order('created_at', { ascending: false });
+  const { data } = await sb.from('photos').select('*').order('created_at',{ascending:false});
   photos = data || [];
-
   document.getElementById('loading-msg').style.display = 'none';
 
-  if (photos.length === 0) {
-    document.getElementById('mosaic-stage').innerHTML = `
-      <div style="color:#a080c8;text-align:center;padding:40px 20px;font-size:1rem">
-        📷 Chưa có ảnh nào.<br>Hãy chia sẻ ảnh trước nhé!
-      </div>`;
+  if (!photos.length) {
+    document.getElementById('mosaic-stage').innerHTML =
+      `<div style="color:#a080c8;text-align:center;padding:40px 20px">📷 Chưa có ảnh nào.<br>Hãy chia sẻ ảnh trước nhé!</div>`;
     document.getElementById('controls').style.display = 'flex';
     return;
   }
@@ -491,47 +438,22 @@ async function init() {
   document.getElementById('show-note').textContent =
     `${photos.length} ảnh · ${allCells.length} ô · nhấn vào ảnh để xem lớn`;
 
-  animateBuild(() => {
-    // after build, start gentle auto-swap every 1.2s
-    swapCycle = setInterval(startAutoSwap, 1200);
-    const btn = document.getElementById('btn-auto');
-    btn.classList.add('active'); btn.textContent = '⏸ Dừng';
-  });
+  // Auto-start: build animation immediately, then auto-swap
+  animateBuild(() => startAuto());
 }
-
-window.addEventListener('resize', () => {
-  if (photos.length === 0) return;
-  const stage = document.getElementById('mosaic-stage');
-  if (!stage.children.length) return;
-  const { size, gap } = computeCell();
-  const stageW = TOTAL_COLS * size + (TOTAL_COLS - 1) * gap;
-  const stageH = ROWS       * size + (ROWS       - 1) * gap;
-  stage.style.width  = stageW + 'px';
-  stage.style.height = stageH + 'px';
-  const radius = Math.max(4, Math.round(size * 0.15)) + 'px';
-  cellEls.forEach((el, i) => {
-    const fc = allCells[i];
-    el.style.width        = size + 'px';
-    el.style.height       = size + 'px';
-    el.style.borderRadius = radius;
-    el.style.left = (fc.col * (size + gap)) + 'px';
-    el.style.top  = (fc.row * (size + gap)) + 'px';
-  });
-});
 
 init();
 
 // ── Stars ──────────────────────────────────────────────────────────────────
 (function(){
-  const c = document.getElementById('stars-canvas');
-  const ctx = c.getContext('2d');
+  const c = document.getElementById('stars-canvas'), ctx = c.getContext('2d');
   let W, H;
   const stars = Array.from({length:180}, () => ({
-    x: Math.random(), y: Math.random(),
-    r: Math.random()*1.4+0.3,
-    tw: Math.random()*Math.PI*2,
-    ts: Math.random()*0.035+0.008,
-    op: Math.random()*0.65+0.2,
+    x:Math.random(), y:Math.random(),
+    r:Math.random()*1.4+0.3,
+    tw:Math.random()*Math.PI*2,
+    ts:Math.random()*0.035+0.008,
+    op:Math.random()*0.65+0.2
   }));
   function resize(){ W=c.width=innerWidth; H=c.height=innerHeight; }
   window.addEventListener('resize', resize); resize();
@@ -539,10 +461,9 @@ init();
     ctx.clearRect(0,0,W,H);
     stars.forEach(s => {
       s.tw += s.ts;
-      const a = s.op*(0.45+0.55*Math.sin(s.tw));
       ctx.beginPath();
       ctx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,210,255,${a})`;
+      ctx.fillStyle = `rgba(255,210,255,${s.op*(0.45+0.55*Math.sin(s.tw))})`;
       ctx.fill();
     });
     requestAnimationFrame(draw);
