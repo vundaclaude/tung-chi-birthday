@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chúc Mừng Sinh Nhật Tùng Chi! 🎂</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700&display=swap');
+
+    :root {
+      --pink: #ff6b9d;
+      --pink-light: #ffb3cc;
+      --pink-pale: #fff0f5;
+      --purple: #c770f0;
+      --gold: #ffd700;
+      --white: #ffffff;
+      --text: #4a2040;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #f8e8ff 50%, #fff0f5 100%);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 60px 20px 40px;
+      z-index: 1;
+    }
+
+    .balloons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .balloon { font-size: 2.8rem; animation: float 3s ease-in-out infinite; }
+    .balloon:nth-child(2) { animation-delay: 0.4s; }
+    .balloon:nth-child(3) { animation-delay: 0.8s; }
+    .balloon:nth-child(4) { animation-delay: 1.2s; }
+    .balloon:nth-child(5) { animation-delay: 1.6s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 8px rgba(255,107,157,0.3));
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #a060c0;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+    }
+
+    .cake-row { font-size: 3.5rem; animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.12); }
+    }
+
+    /* ── Upload Card ── */
+    .upload-section {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto 50px;
+      padding: 0 20px;
+    }
+
+    .upload-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 8px 40px rgba(255,107,157,0.15);
+    }
+
+    .upload-card h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: var(--pink);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #9060a0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #f0d0e0;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-group input[type="text"]:focus { border-color: var(--pink); }
+
+    .drop-zone {
+      border: 3px dashed var(--pink-light);
+      border-radius: 16px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--pink-pale);
+      position: relative;
+      overflow: hidden;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--pink);
+      background: #ffe8f2;
+      transform: scale(1.01);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .drop-icon  { font-size: 2.5rem; margin-bottom: 8px; }
+    .drop-text  { font-weight: 600; color: var(--pink); font-size: 1rem; }
+    .drop-hint  { font-size: 0.8rem; color: #c090c0; margin-top: 4px; }
+
+    .preview-container { display: none; margin-top: 14px; position: relative; }
+    .preview-container img {
+      width: 100%; max-height: 220px; object-fit: cover;
+      display: block; border-radius: 12px;
+    }
+    .preview-remove {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
+      width: 28px; height: 28px; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #c00;
+    }
+
+    .progress-bar-wrap { width: 100%; height: 6px; background: #f0d0e8; border-radius: 3px; margin-top: 14px; display: none; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--pink), var(--purple)); border-radius: 3px; width: 0%; transition: width 0.3s; }
+
+    .upload-btn {
+      width: 100%; margin-top: 20px; padding: 14px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white; border: none; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,107,157,0.35);
+    }
+    .upload-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(255,107,157,0.45); }
+    .upload-btn:active { transform: translateY(0); }
+    .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .upload-status { text-align: center; font-size: 0.9rem; margin-top: 12px; min-height: 20px; font-weight: 600; }
+    .upload-status.success { color: #28a745; }
+    .upload-status.error   { color: #dc3545; }
+
+    /* ── Gallery ── */
+    .gallery-section {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto 60px; padding: 0 20px;
+    }
+
+    .gallery-header { text-align: center; margin-bottom: 30px; }
+    .gallery-header h2 { font-family: 'Dancing Script', cursive; font-size: 2.4rem; color: var(--purple); }
+    .gallery-header p  { color: #b070c0; font-size: 0.95rem; margin-top: 4px; }
+
+    .photo-count {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white; border-radius: 20px; padding: 4px 14px;
+      font-size: 0.85rem; font-weight: 700; margin-top: 8px;
+    }
+
+    .gallery-grid { columns: 3 280px; column-gap: 18px; }
+
+    .gallery-card {
+      break-inside: avoid; margin-bottom: 18px;
+      background: white; border-radius: 18px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(200,100,200,0.12);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeInUp 0.5s ease both;
+    }
+    .gallery-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(200,100,200,0.22); }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .gallery-card img { width: 100%; display: block; object-fit: cover; cursor: pointer; }
+    .gallery-card-info { padding: 12px 14px; }
+    .gallery-card-name    { font-weight: 700; font-size: 0.95rem; color: var(--pink); }
+    .gallery-card-message { font-size: 0.85rem; color: #9060a0; margin-top: 3px; }
+    .gallery-card-time    { font-size: 0.75rem; color: #c8a0cc; margin-top: 5px; }
+
+    .gallery-empty { text-align: center; padding: 50px 20px; color: #c8a0cc; font-size: 1rem; }
+    .gallery-empty .big-icon { font-size: 3rem; margin-bottom: 10px; }
+
+    .loading-spinner { text-align: center; padding: 40px; color: var(--pink); font-size: 1rem; }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-inner { position: relative; max-width: 90vw; max-height: 90vh; }
+    .lightbox-inner img { max-width: 100%; max-height: 80vh; border-radius: 16px; display: block; }
+    .lightbox-close {
+      position: absolute; top: -14px; right: -14px;
+      background: white; border: none; border-radius: 50%;
+      width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #333;
+    }
+    .lightbox-caption { text-align: center; color: white; margin-top: 12px; font-weight: 600; }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 30px 20px;
+      color: #c8a0cc; font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="balloons">
+    <span class="balloon">🎈</span>
+    <span class="balloon">💕</span>
+    <span class="balloon">🎀</span>
+    <span class="balloon">💕</span>
+    <span class="balloon">🎈</span>
+  </div>
+  <h1 class="title">Chúc Mừng Sinh Nhật<br>Tùng Chi! 🌸</h1>
+  <p class="subtitle">✨ Cùng nhau lưu giữ những khoảnh khắc đẹp ✨</p>
+  <div class="cake-row">🎂</div>
+</div>
+
+<!-- Upload Card -->
+<div class="upload-section">
+  <div class="upload-card">
+    <h2>Chia Sẻ Ảnh 📸</h2>
+
+    <div class="form-group">
+      <label>Tên của bạn</label>
+      <input type="text" id="uploader-name" placeholder="VD: Minh Anh" maxlength="60" />
+    </div>
+
+    <div class="form-group">
+      <label>Lời chúc (tuỳ chọn)</label>
+      <input type="text" id="uploader-message" placeholder="VD: Chúc mừng sinh nhật Tùng Chi! 🎉" maxlength="120" />
+    </div>
+
+    <div class="form-group">
+      <label>Ảnh của bạn</label>
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="image/*" />
+        <div class="drop-icon">🖼️</div>
+        <div class="drop-text">Kéo thả ảnh vào đây</div>
+        <div class="drop-hint">hoặc nhấn để chọn ảnh · JPG, PNG, WEBP · tối đa 10 MB</div>
+      </div>
+      <div class="preview-container" id="preview-container">
+        <img id="preview-img" src="" alt="Xem trước" />
+        <button class="preview-remove" id="preview-remove">✕</button>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap" id="progress-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <button class="upload-btn" id="upload-btn">Gửi Ảnh 💌</button>
+    <div class="upload-status" id="upload-status"></div>
+  </div>
+</div>
+
+<!-- Gallery -->
+<div class="gallery-section">
+  <div class="gallery-header">
+    <h2>Bức Tường Kỷ Niệm 💝</h2>
+    <p>Những khoảnh khắc được chia sẻ bởi bạn bè và gia đình</p>
+    <div id="photo-count-badge" style="display:none">
+      <span class="photo-count" id="photo-count-text"></span>
+    </div>
+  </div>
+  <div id="gallery-container">
+    <div class="loading-spinner">Đang tải ảnh... 🌸</div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightbox-close">✕</button>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<footer>
+  Làm với 💕 để chào mừng ngày đặc biệt của Tùng Chi &nbsp;🎂&nbsp; Hãy cùng chia sẻ niềm vui!
+</footer>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── PASTE YOUR SUPABASE CONFIG BELOW ──────────────────────────────────────
+  const SUPABASE_URL    = 'https://wotqkykbpnoxjkfthbkn.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_rzafCHztg-THj0YRnSpD0w_DXB1_vde';
+  const STORAGE_BUCKET  = 'photos'; // bucket name you create in Supabase Storage
+  // ──────────────────────────────────────────────────────────────────────────
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── DOM refs ──────────────────────────────────────────────────────────────
+  const dropZone      = document.getElementById('drop-zone');
+  const fileInput     = document.getElementById('file-input');
+  const previewCont   = document.getElementById('preview-container');
+  const previewImg    = document.getElementById('preview-img');
+  const previewRemove = document.getElementById('preview-remove');
+  const uploadBtn     = document.getElementById('upload-btn');
+  const uploadStatus  = document.getElementById('upload-status');
+  const progressWrap  = document.getElementById('progress-wrap');
+  const progressBar   = document.getElementById('progress-bar');
+  const galleryCont   = document.getElementById('gallery-container');
+  const lightbox      = document.getElementById('lightbox');
+  const lightboxImg   = document.getElementById('lightbox-img');
+  const lightboxCapt  = document.getElementById('lightbox-caption');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  let selectedFile = null;
+
+  // ── File selection / preview ──────────────────────────────────────────────
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) setFile(fileInput.files[0]);
+  });
+
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+
+  function setFile(file) {
+    if (!file.type.startsWith('image/')) { alert('Vui lòng chọn file ảnh.'); return; }
+    if (file.size > 10 * 1024 * 1024)   { alert('File quá lớn — tối đa 10 MB.'); return; }
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = e => { previewImg.src = e.target.result; previewCont.style.display = 'block'; };
+    reader.readAsDataURL(file);
+    clearStatus();
+  }
+
+  previewRemove.addEventListener('click', () => {
+    selectedFile = null;
+    previewCont.style.display = 'none';
+    previewImg.src = '';
+    fileInput.value = '';
+  });
+
+  // ── Upload ────────────────────────────────────────────────────────────────
+  uploadBtn.addEventListener('click', async () => {
+    const name    = document.getElementById('uploader-name').value.trim();
+    const message = document.getElementById('uploader-message').value.trim();
+
+    if (!name)         { setStatus('Vui lòng nhập tên của bạn 🌸', 'error'); return; }
+    if (!selectedFile) { setStatus('Vui lòng chọn ảnh trước 📸', 'error'); return; }
+
+    uploadBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    setStatus('Đang tải ảnh lên...', '');
+
+    // 1. Upload image to Supabase Storage
+    const ext      = selectedFile.name.split('.').pop();
+    const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    // Simulate progress (Supabase JS v2 doesn't expose upload progress natively)
+    let fakeProgress = 0;
+    const progressInterval = setInterval(() => {
+      fakeProgress = Math.min(fakeProgress + 8, 85);
+      progressBar.style.width = fakeProgress + '%';
+    }, 150);
+
+    const { data: storageData, error: storageError } = await supabase
+      .storage
+      .from(STORAGE_BUCKET)
+      .upload(filename, selectedFile, { cacheControl: '3600', upsert: false });
+
+    clearInterval(progressInterval);
+
+    if (storageError) {
+      setStatus('Lỗi tải ảnh: ' + storageError.message, 'error');
+      uploadBtn.disabled = false;
+      progressWrap.style.display = 'none';
+      return;
+    }
+
+    progressBar.style.width = '92%';
+
+    // 2. Get public URL
+    const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
+    const publicUrl = urlData.publicUrl;
+
+    // 3. Save metadata to DB
+    const { error: dbError } = await supabase
+      .from('photos')
+      .insert([{ name, message, url: publicUrl, created_at: new Date().toISOString() }]);
+
+    progressBar.style.width = '100%';
+
+    if (dbError) {
+      setStatus('Lỗi lưu dữ liệu: ' + dbError.message, 'error');
+    } else {
+      setStatus('Ảnh đã được chia sẻ! Cảm ơn bạn 💕', 'success');
+      document.getElementById('uploader-name').value = '';
+      document.getElementById('uploader-message').value = '';
+      previewRemove.click();
+    }
+
+    setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 800);
+    uploadBtn.disabled = false;
+  });
+
+  function setStatus(msg, type) {
+    uploadStatus.textContent = msg;
+    uploadStatus.className = 'upload-status ' + type;
+  }
+  function clearStatus() { uploadStatus.textContent = ''; uploadStatus.className = 'upload-status'; }
+
+  // ── Load gallery ──────────────────────────────────────────────────────────
+  async function loadGallery() {
+    const { data, error } = await supabase
+      .from('photos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { galleryCont.innerHTML = `<div class="gallery-empty">Không thể tải ảnh 😢</div>`; return; }
+    renderGallery(data);
+  }
+
+  function renderGallery(photos) {
+    const badge = document.getElementById('photo-count-badge');
+    const countText = document.getElementById('photo-count-text');
+
+    if (!photos || photos.length === 0) {
+      badge.style.display = 'none';
+      galleryCont.innerHTML = `
+        <div class="gallery-empty">
+          <div class="big-icon">📷</div>
+          Hãy là người đầu tiên chia sẻ ảnh cho Tùng Chi!
+        </div>`;
+      return;
+    }
+
+    badge.style.display = 'block';
+    countText.textContent = `${photos.length} ảnh đã được chia sẻ 💕`;
+
+    galleryCont.innerHTML = '<div class="gallery-grid" id="gallery-grid"></div>';
+    const grid = document.getElementById('gallery-grid');
+
+    photos.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'gallery-card';
+      const ts = p.created_at
+        ? new Date(p.created_at).toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })
+        : '';
+      card.innerHTML = `
+        <img src="${escapeAttr(p.url)}" alt="Ảnh của ${escapeHtml(p.name)}" loading="lazy"
+             data-url="${escapeAttr(p.url)}" data-name="${escapeAttr(p.name)}" data-msg="${escapeAttr(p.message || '')}" />
+        <div class="gallery-card-info">
+          <div class="gallery-card-name">💕 ${escapeHtml(p.name)}</div>
+          ${p.message ? `<div class="gallery-card-message">"${escapeHtml(p.message)}"</div>` : ''}
+          ${ts ? `<div class="gallery-card-time">${ts}</div>` : ''}
+        </div>`;
+      card.querySelector('img').addEventListener('click', openLightbox);
+      grid.appendChild(card);
+    });
+  }
+
+  // ── Realtime subscription ─────────────────────────────────────────────────
+  supabase
+    .channel('photos-channel')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'photos' }, () => {
+      loadGallery(); // reload gallery when new photo is inserted
+    })
+    .subscribe();
+
+  // Initial load
+  loadGallery();
+
+  // ── Lightbox ──────────────────────────────────────────────────────────────
+  function openLightbox(e) {
+    lightboxImg.src = e.target.dataset.url;
+    const name = e.target.dataset.name;
+    const msg  = e.target.dataset.msg;
+    lightboxCapt.textContent = msg ? `${name} — "${msg}"` : name;
+    lightbox.classList.add('open');
+  }
+  lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+
+  // ── Escape helpers ────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escapeAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+</script>
+
+<!-- Confetti -->
+<script>
+(function(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, pieces = [];
+  const COLORS = ['#ff6b9d','#c770f0','#ffd700','#ff9ed2','#d4a0ff','#ff4d8d'];
+  const N = 90;
+
+  function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  window.addEventListener('resize', resize); resize();
+
+  for (let i = 0; i < N; i++) pieces.push({
+    x: Math.random() * 1200, y: Math.random() * -200 - 50,
+    r: Math.random() * 7 + 3, d: Math.random() * N,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    tilt: Math.random() * 10 - 10,
+    tiltSpeed: (Math.random() * 0.07) + 0.03,
+    speed: Math.random() * 1.2 + 0.6,
+    shape: Math.random() > 0.5 ? 'circle' : 'rect'
+  });
+
+  let angle = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    angle += 0.008;
+    pieces.forEach(p => {
+      p.tilt = Math.sin(p.d + angle) * 12;
+      p.y += p.speed;
+      p.x += Math.sin(angle) * 0.4;
+      if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = 0.82;
+      if (p.shape === 'circle') {
+        ctx.arc(p.x + p.tilt, p.y, p.r, 0, Math.PI * 2);
+      } else {
+        ctx.save();
+        ctx.translate(p.x + p.tilt, p.y);
+        ctx.rotate(angle * p.tiltSpeed * 10);
+        ctx.fillRect(-p.r, -p.r * 0.5, p.r * 2, p.r);
+        ctx.restore();
+      }
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
