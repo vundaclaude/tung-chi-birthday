@@ -5,16 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chúc Mừng Sinh Nhật Tùng Chi! 🎂</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap');
 
     :root {
       --pink: #ff6b9d;
       --pink-light: #ffb3cc;
       --pink-pale: #fff0f5;
       --purple: #c770f0;
-      --gold: #ffd700;
+      --purple-dark: #9b40c8;
       --white: #ffffff;
       --text: #4a2040;
+      --radius: 20px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,295 +29,317 @@
     }
 
     #confetti-canvas {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
     /* ── Hero ── */
     .hero {
-      position: relative;
+      position: relative; z-index: 1;
       text-align: center;
-      padding: 60px 20px 40px;
-      z-index: 1;
+      padding: 52px 20px 36px;
     }
-
-    .balloons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .balloon { font-size: 2.8rem; animation: float 3s ease-in-out infinite; }
-    .balloon:nth-child(2) { animation-delay: 0.4s; }
-    .balloon:nth-child(3) { animation-delay: 0.8s; }
-    .balloon:nth-child(4) { animation-delay: 1.2s; }
-    .balloon:nth-child(5) { animation-delay: 1.6s; }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-14px); }
-    }
+    .balloons { display: flex; justify-content: center; gap: 14px; margin-bottom: 16px; }
+    .balloon  { font-size: 2.6rem; animation: float 3s ease-in-out infinite; }
+    .balloon:nth-child(2) { animation-delay:.4s }
+    .balloon:nth-child(3) { animation-delay:.8s }
+    .balloon:nth-child(4) { animation-delay:1.2s }
+    .balloon:nth-child(5) { animation-delay:1.6s }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
 
     .title {
       font-family: 'Dancing Script', cursive;
-      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-size: clamp(2.6rem, 7vw, 5rem);
       background: linear-gradient(135deg, var(--pink), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-      margin-bottom: 8px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.2; margin-bottom: 8px;
       filter: drop-shadow(0 2px 8px rgba(255,107,157,0.3));
     }
+    .subtitle { font-size: 1rem; color: #a060c0; font-weight: 600; margin-bottom: 20px; }
+    .cake-row { font-size: 3rem; animation: pulse 1.8s ease-in-out infinite; display: inline-block; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
 
-    .subtitle {
-      font-size: 1.1rem;
-      color: #a060c0;
-      font-weight: 600;
-      letter-spacing: 1px;
-      margin-bottom: 30px;
-    }
-
-    .cake-row { font-size: 3.5rem; animation: pulse 1.8s ease-in-out infinite; }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50%       { transform: scale(1.12); }
+    /* ── Main 2-col layout ── */
+    .main-layout {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+      align-items: start;
     }
 
     /* ── Upload Card ── */
-    .upload-section {
-      position: relative;
-      z-index: 1;
-      max-width: 560px;
-      margin: 0 auto 50px;
-      padding: 0 20px;
-    }
-
     .upload-card {
       background: var(--white);
-      border-radius: 24px;
-      padding: 32px;
+      border-radius: var(--radius);
+      padding: 30px 26px;
       box-shadow: 0 8px 40px rgba(255,107,157,0.15);
+      position: sticky;
+      top: 24px;
     }
 
-    .upload-card h2 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      color: var(--pink);
+    .upload-card-header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
-
-    .form-group { margin-bottom: 16px; }
-
-    .form-group label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: #9060a0;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
+    .upload-card-header .icon-circle {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 18px rgba(255,107,157,0.4);
     }
+    .upload-card-header h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.7rem; color: var(--text);
+    }
+    .upload-card-header p { font-size: 0.82rem; color: #b080c0; margin-top: 3px; }
 
-    .form-group input[type="text"] {
+    /* floating-label inputs */
+    .field {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .field input {
       width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #f0d0e0;
-      border-radius: 12px;
+      padding: 20px 16px 8px;
+      border: 2px solid #f0d0e8;
+      border-radius: 14px;
       font-family: 'Nunito', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: var(--text);
-      transition: border-color 0.2s;
+      background: #fdf7fc;
       outline: none;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .form-group input[type="text"]:focus { border-color: var(--pink); }
+    .field input:focus { border-color: var(--pink); background: #fff; }
+    .field label {
+      position: absolute;
+      left: 16px; top: 14px;
+      font-size: 0.85rem; font-weight: 700;
+      color: #c090d0;
+      pointer-events: none;
+      transition: all 0.18s;
+    }
+    .field input:focus ~ label,
+    .field input:not(:placeholder-shown) ~ label {
+      top: 6px; font-size: 0.7rem; color: var(--pink);
+    }
+    .field .field-icon {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      font-size: 1.1rem; pointer-events: none;
+    }
 
+    /* drop zone */
     .drop-zone {
-      border: 3px dashed var(--pink-light);
+      border: 2.5px dashed var(--pink-light);
       border-radius: 16px;
-      padding: 36px 20px;
+      padding: 28px 16px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
       background: var(--pink-pale);
       position: relative;
       overflow: hidden;
+      margin-bottom: 18px;
     }
     .drop-zone:hover, .drop-zone.drag-over {
-      border-color: var(--pink);
-      background: #ffe8f2;
-      transform: scale(1.01);
+      border-color: var(--pink); background: #ffe8f2; transform: scale(1.01);
     }
     .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      opacity: 0;
-      cursor: pointer;
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
     }
+    .drop-icon { font-size: 2.2rem; margin-bottom: 6px; }
+    .drop-text { font-weight: 700; color: var(--pink); font-size: 0.95rem; }
+    .drop-hint { font-size: 0.75rem; color: #c090c0; margin-top: 3px; }
 
-    .drop-icon  { font-size: 2.5rem; margin-bottom: 8px; }
-    .drop-text  { font-weight: 600; color: var(--pink); font-size: 1rem; }
-    .drop-hint  { font-size: 0.8rem; color: #c090c0; margin-top: 4px; }
-
-    .preview-container { display: none; margin-top: 14px; position: relative; }
-    .preview-container img {
-      width: 100%; max-height: 220px; object-fit: cover;
-      display: block; border-radius: 12px;
-    }
+    .preview-container { display: none; margin-bottom: 14px; position: relative; }
+    .preview-container img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; display: block; }
     .preview-remove {
       position: absolute; top: 8px; right: 8px;
-      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
-      width: 28px; height: 28px; font-size: 1rem; cursor: pointer;
+      background: rgba(255,255,255,0.92); border: none; border-radius: 50%;
+      width: 28px; height: 28px; font-size: 0.9rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center; color: #c00;
     }
 
-    .progress-bar-wrap { width: 100%; height: 6px; background: #f0d0e8; border-radius: 3px; margin-top: 14px; display: none; }
+    .progress-bar-wrap { width: 100%; height: 5px; background: #f0d0e8; border-radius: 3px; margin-bottom: 14px; display: none; overflow: hidden; }
     .progress-bar { height: 100%; background: linear-gradient(90deg, var(--pink), var(--purple)); border-radius: 3px; width: 0%; transition: width 0.3s; }
 
     .upload-btn {
-      width: 100%; margin-top: 20px; padding: 14px;
+      width: 100%; padding: 15px;
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white; border: none; border-radius: 14px;
-      font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700;
-      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 20px rgba(255,107,157,0.35);
+      font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.5px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,107,157,0.4);
     }
-    .upload-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(255,107,157,0.45); }
+    .upload-btn:hover  { transform: translateY(-2px); box-shadow: 0 7px 28px rgba(255,107,157,0.5); }
     .upload-btn:active { transform: translateY(0); }
-    .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .upload-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    .upload-status { text-align: center; font-size: 0.9rem; margin-top: 12px; min-height: 20px; font-weight: 600; }
-    .upload-status.success { color: #28a745; }
-    .upload-status.error   { color: #dc3545; }
+    .upload-status { text-align: center; font-size: 0.88rem; margin-top: 10px; min-height: 20px; font-weight: 700; }
+    .upload-status.success { color: #22c55e; }
+    .upload-status.error   { color: #ef4444; }
 
-    /* ── Gallery ── */
-    .gallery-section {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto 60px; padding: 0 20px;
+    /* stats strip */
+    .stats-strip {
+      display: flex; gap: 10px; margin-top: 22px;
     }
-
-    .gallery-header { text-align: center; margin-bottom: 30px; }
-    .gallery-header h2 { font-family: 'Dancing Script', cursive; font-size: 2.4rem; color: var(--purple); }
-    .gallery-header p  { color: #b070c0; font-size: 0.95rem; margin-top: 4px; }
-
-    .photo-count {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: white; border-radius: 20px; padding: 4px 14px;
-      font-size: 0.85rem; font-weight: 700; margin-top: 8px;
+    .stat-box {
+      flex: 1; background: var(--pink-pale); border-radius: 14px;
+      padding: 12px 8px; text-align: center;
     }
+    .stat-box .stat-num { font-size: 1.5rem; font-weight: 800; color: var(--pink); }
+    .stat-box .stat-label { font-size: 0.72rem; color: #b080c0; font-weight: 600; margin-top: 2px; }
 
-    .gallery-grid { columns: 3 280px; column-gap: 18px; }
+    /* ── Gallery side ── */
+    .gallery-side {}
+
+    .gallery-header { margin-bottom: 20px; }
+    .gallery-header h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--purple); }
+    .gallery-header p  { color: #b070c0; font-size: 0.9rem; margin-top: 2px; }
+
+    .gallery-grid { columns: 2 200px; column-gap: 16px; }
 
     .gallery-card {
-      break-inside: avoid; margin-bottom: 18px;
-      background: white; border-radius: 18px; overflow: hidden;
-      box-shadow: 0 4px 20px rgba(200,100,200,0.12);
+      break-inside: avoid; margin-bottom: 16px;
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 3px 16px rgba(200,100,200,0.1);
       transition: transform 0.2s, box-shadow 0.2s;
-      animation: fadeInUp 0.5s ease both;
+      animation: fadeInUp 0.45s ease both;
+      position: relative;
     }
-    .gallery-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(200,100,200,0.22); }
+    .gallery-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(200,100,200,0.2); }
+    .gallery-card.optimistic { opacity: 0.7; }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
     .gallery-card img { width: 100%; display: block; object-fit: cover; cursor: pointer; }
-    .gallery-card-info { padding: 12px 14px; }
-    .gallery-card-name    { font-weight: 700; font-size: 0.95rem; color: var(--pink); }
-    .gallery-card-message { font-size: 0.85rem; color: #9060a0; margin-top: 3px; }
-    .gallery-card-time    { font-size: 0.75rem; color: #c8a0cc; margin-top: 5px; }
+    .gallery-card-info { padding: 10px 12px 12px; }
+    .gallery-card-name    { font-weight: 800; font-size: 0.9rem; color: var(--pink); }
+    .gallery-card-message { font-size: 0.82rem; color: #9060a0; margin-top: 2px; font-style: italic; }
+    .gallery-card-time    { font-size: 0.72rem; color: #c8a0cc; margin-top: 4px; }
 
-    .gallery-empty { text-align: center; padding: 50px 20px; color: #c8a0cc; font-size: 1rem; }
+    .delete-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,0.92); border: none; border-radius: 50%;
+      width: 30px; height: 30px; font-size: 0.85rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #ef4444; opacity: 0; transition: opacity 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .gallery-card:hover .delete-btn { opacity: 1; }
+
+    .gallery-empty { text-align: center; padding: 60px 20px; color: #c8a0cc; font-size: 1rem; }
     .gallery-empty .big-icon { font-size: 3rem; margin-bottom: 10px; }
-
-    .loading-spinner { text-align: center; padding: 40px; color: var(--pink); font-size: 1rem; }
+    .loading-spinner { text-align: center; padding: 50px; color: var(--pink); }
 
     /* ── Lightbox ── */
     .lightbox {
       display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.85); z-index: 1000;
+      background: rgba(0,0,0,0.88); z-index: 1000;
       align-items: center; justify-content: center; padding: 20px;
     }
     .lightbox.open { display: flex; }
-    .lightbox-inner { position: relative; max-width: 90vw; max-height: 90vh; }
-
-    /* ── Mobile ── */
-    @media (max-width: 600px) {
-      .hero { padding: 40px 16px 28px; }
-
-      .balloons { gap: 10px; }
-      .balloon  { font-size: 2rem; }
-      .cake-row { font-size: 2.6rem; }
-
-      .subtitle {
-        font-size: 0.9rem;
-        letter-spacing: 0.3px;
-        padding: 0 8px;
-      }
-
-      .upload-section { margin-bottom: 36px; padding: 0 14px; }
-      .upload-card    { padding: 22px 18px; border-radius: 18px; }
-      .upload-card h2 { font-size: 1.5rem; }
-
-      .drop-zone { padding: 28px 16px; }
-      .drop-icon { font-size: 2rem; }
-
-      .form-group input[type="text"] {
-        font-size: 1rem;   /* prevents iOS zoom on focus */
-        padding: 13px 14px;
-      }
-
-      .upload-btn { padding: 16px; font-size: 1rem; }
-
-      .gallery-section  { padding: 0 14px; }
-      .gallery-header h2 { font-size: 1.9rem; }
-      .gallery-grid { columns: 2 140px; column-gap: 12px; }
-      .gallery-card { margin-bottom: 12px; border-radius: 14px; }
-      .gallery-card-info { padding: 10px 12px; }
-
-      .lightbox-inner { max-width: 96vw; }
-      .lightbox-close { width: 32px; height: 32px; font-size: 1rem; top: -12px; right: -8px; }
-    }
-
-    @media (max-width: 360px) {
-      .gallery-grid { columns: 1; }
-    }
-    .lightbox-inner img { max-width: 100%; max-height: 80vh; border-radius: 16px; display: block; }
+    .lightbox-inner { position: relative; max-width: 92vw; }
+    .lightbox-inner img { max-width: 100%; max-height: 82vh; border-radius: 16px; display: block; }
     .lightbox-close {
       position: absolute; top: -14px; right: -14px;
       background: white; border: none; border-radius: 50%;
-      width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer;
+      width: 34px; height: 34px; font-size: 1.1rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center; color: #333;
     }
-    .lightbox-caption { text-align: center; color: white; margin-top: 12px; font-weight: 600; }
+    .lightbox-caption { text-align: center; color: white; margin-top: 10px; font-weight: 600; font-size: 0.95rem; }
+
+    /* ── Delete Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 2000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 22px; padding: 32px 28px;
+      max-width: 360px; width: 100%;
+      box-shadow: 0 20px 60px rgba(200,100,200,0.25);
+      text-align: center; animation: popIn 0.25s ease;
+    }
+    @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+    .modal .modal-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .modal h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .modal p  { font-size: 0.88rem; color: #a070b0; margin-bottom: 18px; }
+    .modal input {
+      width: 100%; padding: 13px 16px;
+      border: 2px solid #f0d0e8; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 1rem;
+      outline: none; text-align: center; letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+    .modal input:focus { border-color: var(--pink); }
+    .modal-error { color: #ef4444; font-size: 0.82rem; min-height: 18px; margin-bottom: 14px; font-weight: 700; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btns button {
+      flex: 1; padding: 13px; border: none; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-cancel { background: #f5e8f8; color: #a070b0; }
+    .btn-delete { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
+    .btn-cancel:hover { background: #ead0f0; }
+    .btn-delete:hover { filter: brightness(1.1); }
 
     /* ── Footer ── */
     footer {
       position: relative; z-index: 1;
-      text-align: center; padding: 30px 20px;
-      color: #c8a0cc; font-size: 0.85rem;
+      text-align: center; padding: 28px 20px;
+      color: #c8a0cc; font-size: 0.82rem;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 860px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+        padding: 0 16px;
+        gap: 20px;
+      }
+      .upload-card { position: static; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 36px 16px 24px; }
+      .balloon { font-size: 2rem; }
+      .cake-row { font-size: 2.4rem; }
+      .subtitle { font-size: 0.88rem; }
+
+      .upload-card { padding: 22px 18px; }
+      .field input  { font-size: 1rem; }
+
+      .gallery-header h2 { font-size: 1.8rem; }
+      .gallery-grid { columns: 2 140px; column-gap: 12px; }
+
+      .lightbox-inner { max-width: 96vw; }
+    }
+
+    @media (max-width: 380px) {
+      .gallery-grid { columns: 1; }
     }
   </style>
 </head>
 <body>
-
 <canvas id="confetti-canvas"></canvas>
 
 <!-- Hero -->
 <div class="hero">
   <div class="balloons">
-    <span class="balloon">🎈</span>
-    <span class="balloon">💕</span>
-    <span class="balloon">🎀</span>
-    <span class="balloon">💕</span>
+    <span class="balloon">🎈</span><span class="balloon">💕</span>
+    <span class="balloon">🎀</span><span class="balloon">💕</span>
     <span class="balloon">🎈</span>
   </div>
   <h1 class="title">Chúc Mừng Sinh Nhật<br>Tùng Chi! 🌸</h1>
@@ -324,56 +347,71 @@
   <div class="cake-row">🎂</div>
 </div>
 
-<!-- Upload Card -->
-<div class="upload-section">
+<!-- Main 2-col layout -->
+<div class="main-layout">
+
+  <!-- LEFT: Upload Card -->
   <div class="upload-card">
-    <h2>Chia Sẻ Ảnh 📸</h2>
+    <div class="upload-card-header">
+      <div class="icon-circle">📸</div>
+      <h2>Chia Sẻ Kỷ Niệm</h2>
+      <p>Gửi ảnh của bạn để chúc mừng Tùng Chi!</p>
+    </div>
 
-    <div class="form-group">
+    <div class="field">
+      <input type="text" id="uploader-name" placeholder=" " maxlength="60" />
       <label>Tên của bạn</label>
-      <input type="text" id="uploader-name" placeholder="VD: Minh Anh" maxlength="60" />
+      <span class="field-icon">👤</span>
     </div>
 
-    <div class="form-group">
-      <label>Lời chúc (tuỳ chọn)</label>
-      <input type="text" id="uploader-message" placeholder="VD: Chúc mừng sinh nhật Tùng Chi! 🎉" maxlength="120" />
+    <div class="field">
+      <input type="text" id="uploader-message" placeholder=" " maxlength="120" />
+      <label>Lời chúc sinh nhật 🎉</label>
+      <span class="field-icon">💌</span>
     </div>
 
-    <div class="form-group">
-      <label>Ảnh của bạn</label>
-      <div class="drop-zone" id="drop-zone">
-        <input type="file" id="file-input" accept="image/*" />
-        <div class="drop-icon">🖼️</div>
-        <div class="drop-text">Kéo thả ảnh vào đây</div>
-        <div class="drop-hint">hoặc nhấn để chọn ảnh · JPG, PNG, WEBP · tối đa 10 MB</div>
-      </div>
-      <div class="preview-container" id="preview-container">
-        <img id="preview-img" src="" alt="Xem trước" />
-        <button class="preview-remove" id="preview-remove">✕</button>
-      </div>
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*" />
+      <div class="drop-icon">🖼️</div>
+      <div class="drop-text">Kéo thả hoặc nhấn để chọn ảnh</div>
+      <div class="drop-hint">JPG · PNG · WEBP · tối đa 10 MB</div>
+    </div>
+
+    <div class="preview-container" id="preview-container">
+      <img id="preview-img" src="" alt="Xem trước" />
+      <button class="preview-remove" id="preview-remove">✕</button>
     </div>
 
     <div class="progress-bar-wrap" id="progress-wrap">
       <div class="progress-bar" id="progress-bar"></div>
     </div>
 
-    <button class="upload-btn" id="upload-btn">Gửi Ảnh 💌</button>
+    <button class="upload-btn" id="upload-btn">Gửi Ảnh Ngay 💌</button>
     <div class="upload-status" id="upload-status"></div>
-  </div>
-</div>
 
-<!-- Gallery -->
-<div class="gallery-section">
-  <div class="gallery-header">
-    <h2>Bức Tường Kỷ Niệm 💝</h2>
-    <p>Những khoảnh khắc được chia sẻ bởi bạn bè và gia đình</p>
-    <div id="photo-count-badge" style="display:none">
-      <span class="photo-count" id="photo-count-text"></span>
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-count">0</div>
+        <div class="stat-label">Ảnh chia sẻ</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-people">0</div>
+        <div class="stat-label">Người tham gia</div>
+      </div>
     </div>
   </div>
-  <div id="gallery-container">
-    <div class="loading-spinner">Đang tải ảnh... 🌸</div>
+
+  <!-- RIGHT: Gallery -->
+  <div class="gallery-side">
+    <div class="gallery-header">
+      <h2>Bức Tường Kỷ Niệm 💝</h2>
+      <p>Những khoảnh khắc được chia sẻ bởi bạn bè và gia đình</p>
+    </div>
+    <div id="gallery-container">
+      <div class="loading-spinner">Đang tải ảnh... 🌸</div>
+    </div>
   </div>
+
 </div>
 
 <!-- Lightbox -->
@@ -385,22 +423,33 @@
   </div>
 </div>
 
-<footer>
-  Làm với 💕 để chào mừng ngày đặc biệt của Tùng Chi &nbsp;🎂&nbsp; Hãy cùng chia sẻ niềm vui!
-</footer>
+<!-- Delete Modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <h3>Xoá ảnh này?</h3>
+    <p>Nhập mật khẩu để xác nhận xoá ảnh.</p>
+    <input type="password" id="delete-password" placeholder="••••••" maxlength="20" />
+    <div class="modal-error" id="delete-error"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="delete-cancel">Huỷ</button>
+      <button class="btn-delete" id="delete-confirm">Xoá</button>
+    </div>
+  </div>
+</div>
 
-<!-- Supabase JS SDK -->
+<footer>Làm với 💕 để chào mừng ngày đặc biệt của Tùng Chi 🎂</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ── PASTE YOUR SUPABASE CONFIG BELOW ──────────────────────────────────────
-  const SUPABASE_URL    = 'https://wotqkykbpnoxjkfthbkn.supabase.co';
+  const SUPABASE_URL     = 'https://wotqkykbpnoxjkfthbkn.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_rzafCHztg-THj0YRnSpD0w_DXB1_vde';
-  const STORAGE_BUCKET  = 'photos'; // bucket name you create in Supabase Storage
-  // ──────────────────────────────────────────────────────────────────────────
+  const STORAGE_BUCKET   = 'photos';
+  const DELETE_PASSWORD  = '123abc';
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ── DOM refs ──────────────────────────────────────────────────────────────
+  // ── DOM ───────────────────────────────────────────────────────────────────
   const dropZone      = document.getElementById('drop-zone');
   const fileInput     = document.getElementById('file-input');
   const previewCont   = document.getElementById('preview-container');
@@ -415,19 +464,23 @@
   const lightboxImg   = document.getElementById('lightbox-img');
   const lightboxCapt  = document.getElementById('lightbox-caption');
   const lightboxClose = document.getElementById('lightbox-close');
+  const deleteModal   = document.getElementById('delete-modal');
+  const deletePass    = document.getElementById('delete-password');
+  const deleteError   = document.getElementById('delete-error');
+  const deleteCancel  = document.getElementById('delete-cancel');
+  const deleteConfirm = document.getElementById('delete-confirm');
 
   let selectedFile = null;
+  let photos = [];          // local cache
+  let pendingDeleteId = null;
+  let pendingDeleteUrl = null;
 
-  // ── File selection / preview ──────────────────────────────────────────────
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) setFile(fileInput.files[0]);
-  });
-
+  // ── File selection ────────────────────────────────────────────────────────
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
   dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
   dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
+    e.preventDefault(); dropZone.classList.remove('drag-over');
     if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
   });
 
@@ -442,85 +495,85 @@
   }
 
   previewRemove.addEventListener('click', () => {
-    selectedFile = null;
-    previewCont.style.display = 'none';
-    previewImg.src = '';
-    fileInput.value = '';
+    selectedFile = null; previewCont.style.display = 'none';
+    previewImg.src = ''; fileInput.value = '';
   });
 
   // ── Upload ────────────────────────────────────────────────────────────────
   uploadBtn.addEventListener('click', async () => {
     const name    = document.getElementById('uploader-name').value.trim();
     const message = document.getElementById('uploader-message').value.trim();
-
     if (!name)         { setStatus('Vui lòng nhập tên của bạn 🌸', 'error'); return; }
     if (!selectedFile) { setStatus('Vui lòng chọn ảnh trước 📸', 'error'); return; }
 
     uploadBtn.disabled = true;
     progressWrap.style.display = 'block';
-    setStatus('Đang tải ảnh lên...', '');
+    setStatus('Đang tải lên...', '');
 
-    // 1. Upload image to Supabase Storage
-    const ext      = selectedFile.name.split('.').pop();
+    // Optimistic UI — add card immediately with local preview
+    const localUrl = previewImg.src;
+    const tempId = 'temp_' + Date.now();
+    const optimisticPhoto = { id: tempId, name, message, url: localUrl, created_at: new Date().toISOString(), optimistic: true };
+    photos = [optimisticPhoto, ...photos];
+    renderGallery(photos);
+
+    const ext = selectedFile.name.split('.').pop();
     const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
-    // Simulate progress (Supabase JS v2 doesn't expose upload progress natively)
     let fakeProgress = 0;
     const progressInterval = setInterval(() => {
-      fakeProgress = Math.min(fakeProgress + 8, 85);
+      fakeProgress = Math.min(fakeProgress + 10, 88);
       progressBar.style.width = fakeProgress + '%';
-    }, 150);
+    }, 120);
 
-    const uploadPromise = sb
-      .storage
-      .from(STORAGE_BUCKET)
+    const uploadPromise = sb.storage.from(STORAGE_BUCKET)
       .upload(filename, selectedFile, { cacheControl: '3600', upsert: false });
-
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Hết thời gian chờ — kiểm tra lại bucket Storage trong Supabase.')), 15000)
-    );
+      setTimeout(() => reject(new Error('Hết thời gian chờ.')), 20000));
 
-    let storageData, storageError;
+    let storageError;
     try {
       const result = await Promise.race([uploadPromise, timeoutPromise]);
-      storageData = result.data;
       storageError = result.error;
-    } catch (err) {
-      storageError = err;
-    }
+    } catch (err) { storageError = err; }
 
     clearInterval(progressInterval);
 
     if (storageError) {
-      setStatus('Lỗi: ' + (storageError.message || JSON.stringify(storageError)), 'error');
+      // Remove optimistic card
+      photos = photos.filter(p => p.id !== tempId);
+      renderGallery(photos);
+      setStatus('Lỗi: ' + (storageError.message || storageError), 'error');
       uploadBtn.disabled = false;
       progressWrap.style.display = 'none';
       return;
     }
 
-    progressBar.style.width = '92%';
-
-    // 2. Get public URL
+    progressBar.style.width = '95%';
     const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
     const publicUrl = urlData.publicUrl;
 
-    // 3. Save metadata to DB
-    const { error: dbError } = await sb
-      .from('photos')
-      .insert([{ name, message, url: publicUrl, created_at: new Date().toISOString() }]);
+    const { data: inserted, error: dbError } = await sb.from('photos')
+      .insert([{ name, message, url: publicUrl, created_at: new Date().toISOString() }])
+      .select().single();
 
     progressBar.style.width = '100%';
 
     if (dbError) {
+      photos = photos.filter(p => p.id !== tempId);
+      renderGallery(photos);
       setStatus('Lỗi lưu dữ liệu: ' + dbError.message, 'error');
     } else {
+      // Replace optimistic card with real data
+      photos = photos.map(p => p.id === tempId ? inserted : p);
+      renderGallery(photos);
       setStatus('Ảnh đã được chia sẻ! Cảm ơn bạn 💕', 'success');
       document.getElementById('uploader-name').value = '';
       document.getElementById('uploader-message').value = '';
       previewRemove.click();
     }
 
-    setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 800);
+    setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 700);
     uploadBtn.disabled = false;
   });
 
@@ -530,23 +583,21 @@
   }
   function clearStatus() { uploadStatus.textContent = ''; uploadStatus.className = 'upload-status'; }
 
-  // ── Load gallery ──────────────────────────────────────────────────────────
+  // ── Gallery ───────────────────────────────────────────────────────────────
   async function loadGallery() {
-    const { data, error } = await sb
-      .from('photos')
-      .select('*')
-      .order('created_at', { ascending: false });
-
+    const { data, error } = await sb.from('photos').select('*').order('created_at', { ascending: false });
     if (error) { galleryCont.innerHTML = `<div class="gallery-empty">Không thể tải ảnh 😢</div>`; return; }
-    renderGallery(data);
+    photos = data || [];
+    renderGallery(photos);
   }
 
-  function renderGallery(photos) {
-    const badge = document.getElementById('photo-count-badge');
-    const countText = document.getElementById('photo-count-text');
+  function renderGallery(list) {
+    // update stats
+    const unique = new Set((list).filter(p => !p.optimistic).map(p => p.name));
+    document.getElementById('stat-count').textContent   = list.filter(p => !p.optimistic).length;
+    document.getElementById('stat-people').textContent  = unique.size;
 
-    if (!photos || photos.length === 0) {
-      badge.style.display = 'none';
+    if (!list || list.length === 0) {
       galleryCont.innerHTML = `
         <div class="gallery-empty">
           <div class="big-icon">📷</div>
@@ -555,102 +606,137 @@
       return;
     }
 
-    badge.style.display = 'block';
-    countText.textContent = `${photos.length} ảnh đã được chia sẻ 💕`;
-
     galleryCont.innerHTML = '<div class="gallery-grid" id="gallery-grid"></div>';
     const grid = document.getElementById('gallery-grid');
 
-    photos.forEach(p => {
+    list.forEach(p => {
       const card = document.createElement('div');
-      card.className = 'gallery-card';
+      card.className = 'gallery-card' + (p.optimistic ? ' optimistic' : '');
+      card.dataset.id = p.id;
       const ts = p.created_at
-        ? new Date(p.created_at).toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })
+        ? new Date(p.created_at).toLocaleDateString('vi-VN', { day:'numeric', month:'long', year:'numeric' })
         : '';
       card.innerHTML = `
         <img src="${escapeAttr(p.url)}" alt="Ảnh của ${escapeHtml(p.name)}" loading="lazy"
-             data-url="${escapeAttr(p.url)}" data-name="${escapeAttr(p.name)}" data-msg="${escapeAttr(p.message || '')}" />
+             data-url="${escapeAttr(p.url)}" data-name="${escapeAttr(p.name)}" data-msg="${escapeAttr(p.message||'')}" />
+        ${!p.optimistic ? `<button class="delete-btn" data-id="${escapeAttr(String(p.id))}" data-url="${escapeAttr(p.url)}" title="Xoá ảnh">🗑️</button>` : ''}
         <div class="gallery-card-info">
           <div class="gallery-card-name">💕 ${escapeHtml(p.name)}</div>
           ${p.message ? `<div class="gallery-card-message">"${escapeHtml(p.message)}"</div>` : ''}
           ${ts ? `<div class="gallery-card-time">${ts}</div>` : ''}
         </div>`;
       card.querySelector('img').addEventListener('click', openLightbox);
+      const delBtn = card.querySelector('.delete-btn');
+      if (delBtn) delBtn.addEventListener('click', e => { e.stopPropagation(); openDeleteModal(delBtn.dataset.id, delBtn.dataset.url); });
       grid.appendChild(card);
     });
   }
 
-  // ── Realtime subscription ─────────────────────────────────────────────────
-  sb
-    .channel('photos-channel')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'photos' }, () => {
-      loadGallery();
+  // ── Realtime ──────────────────────────────────────────────────────────────
+  sb.channel('photos-channel')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'photos' }, payload => {
+      // Only add if not already in list (avoid dupe with optimistic)
+      if (!photos.find(p => p.id === payload.new.id)) {
+        photos = [payload.new, ...photos.filter(p => !p.optimistic)];
+        renderGallery(photos);
+      }
+    })
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'photos' }, payload => {
+      photos = photos.filter(p => p.id !== payload.old.id);
+      renderGallery(photos);
     })
     .subscribe();
 
-  // Initial load
   loadGallery();
 
   // ── Lightbox ──────────────────────────────────────────────────────────────
   function openLightbox(e) {
     lightboxImg.src = e.target.dataset.url;
-    const name = e.target.dataset.name;
-    const msg  = e.target.dataset.msg;
+    const name = e.target.dataset.name, msg = e.target.dataset.msg;
     lightboxCapt.textContent = msg ? `${name} — "${msg}"` : name;
     lightbox.classList.add('open');
   }
   lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
   lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
 
-  // ── Escape helpers ────────────────────────────────────────────────────────
+  // ── Delete Modal ──────────────────────────────────────────────────────────
+  function openDeleteModal(id, url) {
+    pendingDeleteId = id; pendingDeleteUrl = url;
+    deletePass.value = ''; deleteError.textContent = '';
+    deleteModal.classList.add('open');
+    setTimeout(() => deletePass.focus(), 100);
+  }
+
+  deleteCancel.addEventListener('click', () => { deleteModal.classList.remove('open'); });
+  deleteModal.addEventListener('click', e => { if (e.target === deleteModal) deleteModal.classList.remove('open'); });
+
+  deletePass.addEventListener('keydown', e => { if (e.key === 'Enter') deleteConfirm.click(); });
+
+  deleteConfirm.addEventListener('click', async () => {
+    if (deletePass.value !== DELETE_PASSWORD) {
+      deleteError.textContent = 'Mật khẩu không đúng ❌';
+      deletePass.value = ''; deletePass.focus();
+      return;
+    }
+    deleteConfirm.disabled = true;
+    deleteConfirm.textContent = 'Đang xoá...';
+
+    // Delete from DB
+    const { error: dbErr } = await sb.from('photos').delete().eq('id', pendingDeleteId);
+    if (dbErr) { deleteError.textContent = 'Lỗi: ' + dbErr.message; deleteConfirm.disabled = false; deleteConfirm.textContent = 'Xoá'; return; }
+
+    // Delete from storage (extract filename from URL)
+    try {
+      const urlPath = new URL(pendingDeleteUrl).pathname;
+      const parts = urlPath.split('/object/public/' + STORAGE_BUCKET + '/');
+      if (parts[1]) await sb.storage.from(STORAGE_BUCKET).remove([parts[1]]);
+    } catch(_) {}
+
+    photos = photos.filter(p => String(p.id) !== String(pendingDeleteId));
+    renderGallery(photos);
+    deleteModal.classList.remove('open');
+    deleteConfirm.disabled = false; deleteConfirm.textContent = 'Xoá';
+  });
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
   function escapeHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-  function escapeAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+  function escapeAttr(s) { return String(s).replace(/"/g,'&quot;'); }
 </script>
 
 <!-- Confetti -->
 <script>
 (function(){
   const canvas = document.getElementById('confetti-canvas');
-  const ctx    = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   let W, H, pieces = [];
   const COLORS = ['#ff6b9d','#c770f0','#ffd700','#ff9ed2','#d4a0ff','#ff4d8d'];
-  const N = 90;
-
+  const N = 80;
   function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
   window.addEventListener('resize', resize); resize();
-
   for (let i = 0; i < N; i++) pieces.push({
-    x: Math.random() * 1200, y: Math.random() * -200 - 50,
-    r: Math.random() * 7 + 3, d: Math.random() * N,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    tilt: Math.random() * 10 - 10,
-    tiltSpeed: (Math.random() * 0.07) + 0.03,
-    speed: Math.random() * 1.2 + 0.6,
-    shape: Math.random() > 0.5 ? 'circle' : 'rect'
+    x: Math.random()*1200, y: Math.random()*-200-50,
+    r: Math.random()*6+3, d: Math.random()*N,
+    color: COLORS[Math.floor(Math.random()*COLORS.length)],
+    tilt: 0, tiltSpeed: Math.random()*0.07+0.03,
+    speed: Math.random()*1.1+0.5,
+    shape: Math.random()>0.5?'circle':'rect'
   });
-
   let angle = 0;
   function draw() {
-    ctx.clearRect(0, 0, W, H);
-    angle += 0.008;
+    ctx.clearRect(0,0,W,H); angle += 0.008;
     pieces.forEach(p => {
       p.tilt = Math.sin(p.d + angle) * 12;
-      p.y += p.speed;
-      p.x += Math.sin(angle) * 0.4;
-      if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
-      ctx.beginPath();
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = 0.82;
+      p.y += p.speed; p.x += Math.sin(angle)*0.4;
+      if (p.y > H+20) { p.y=-20; p.x=Math.random()*W; }
+      ctx.beginPath(); ctx.fillStyle = p.color; ctx.globalAlpha = 0.8;
       if (p.shape === 'circle') {
-        ctx.arc(p.x + p.tilt, p.y, p.r, 0, Math.PI * 2);
+        ctx.arc(p.x+p.tilt, p.y, p.r, 0, Math.PI*2);
       } else {
-        ctx.save();
-        ctx.translate(p.x + p.tilt, p.y);
-        ctx.rotate(angle * p.tiltSpeed * 10);
-        ctx.fillRect(-p.r, -p.r * 0.5, p.r * 2, p.r);
-        ctx.restore();
+        ctx.save(); ctx.translate(p.x+p.tilt, p.y);
+        ctx.rotate(angle*p.tiltSpeed*10);
+        ctx.fillRect(-p.r,-p.r*0.5,p.r*2,p.r); ctx.restore();
       }
       ctx.fill();
     });
@@ -659,6 +745,5 @@
   draw();
 })();
 </script>
-
 </body>
 </html>
