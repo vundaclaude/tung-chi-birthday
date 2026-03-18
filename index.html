@@ -347,6 +347,31 @@
   <div class="cake-row">🎂</div>
 </div>
 
+<!-- Shuffle Show button -->
+<div style="position:relative;z-index:1;text-align:center;margin-bottom:28px">
+  <a href="show.html">
+    <button style="
+      padding:15px 36px;
+      background:linear-gradient(135deg,#7c3aed,#c770f0,#ff6b9d);
+      color:white;border:none;border-radius:50px;
+      font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;
+      cursor:pointer;letter-spacing:0.5px;
+      box-shadow:0 6px 28px rgba(199,112,240,0.45);
+      transition:transform 0.15s,box-shadow 0.15s;
+      animation: glowPulse 2.5s ease-in-out infinite;
+    " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 36px rgba(199,112,240,0.6)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 6px 28px rgba(199,112,240,0.45)'">
+      ✨ Shuffle Show — Ghép ảnh thành CHI
+    </button>
+  </a>
+</div>
+<style>
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 6px 28px rgba(199,112,240,0.45); }
+  50%      { box-shadow: 0 6px 40px rgba(199,112,240,0.75), 0 0 60px rgba(255,107,157,0.2); }
+}
+</style>
+
 <!-- Main 2-col layout -->
 <div class="main-layout">
 

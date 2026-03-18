@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHI — Happy Birthday 🌸</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@600;700;800&display=swap');
+
+    :root {
+      --cell: clamp(28px, 4.2vw, 56px);
+      --gap:  clamp(3px,  0.5vw, 6px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #2a0845 0%, #0d0020 60%, #000010 100%);
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Stars ── */
+    #stars-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ── */
+    .show-header {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 44px 20px 20px;
+    }
+    .show-header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 6vw, 4rem);
+      background: linear-gradient(135deg, #ff9ed2, #c770f0, #ffd700);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(199,112,240,0.6));
+      margin-bottom: 6px;
+    }
+    .show-header p {
+      color: #d0a0e8; font-size: clamp(0.85rem, 2vw, 1rem); font-weight: 600;
+    }
+
+    /* ── Mosaic wrapper ── */
+    .mosaic-wrap {
+      position: relative; z-index: 1;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── The letter grid ── */
+    .chi-grid {
+      display: grid;
+      grid-template-columns: repeat(18, var(--cell));
+      grid-template-rows:    repeat(10, var(--cell));
+      gap: var(--gap);
+    }
+
+    /* ── Each photo cell ── */
+    .cell {
+      width: var(--cell); height: var(--cell);
+      border-radius: clamp(4px, 0.8vw, 10px);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      animation: cellIn 0.6s ease both;
+    }
+    .cell.empty { pointer-events: none; }
+
+    @keyframes cellIn {
+      from { opacity: 0; transform: scale(0.4) rotate(8deg); }
+      to   { opacity: 1; transform: scale(1)   rotate(0deg); }
+    }
+
+    .cell img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .cell:hover img { transform: scale(1.12); }
+
+    /* glow ring */
+    .cell::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1.5px rgba(255,150,220,0.35);
+      transition: box-shadow 0.3s;
+    }
+    .cell:hover::after {
+      box-shadow: inset 0 0 0 2px rgba(255,107,157,0.9),
+                  0 0 14px rgba(255,107,157,0.6);
+    }
+
+    /* flip animation on shuffle */
+    .cell.flipping {
+      animation: flipCell 0.5s ease both;
+    }
+    @keyframes flipCell {
+      0%   { transform: rotateY(0deg)   scale(1); }
+      50%  { transform: rotateY(90deg)  scale(0.8); opacity: 0.4; }
+      100% { transform: rotateY(0deg)   scale(1); opacity: 1; }
+    }
+
+    /* ── Controls ── */
+    .controls {
+      position: relative; z-index: 1;
+      display: flex; gap: 14px; flex-wrap: wrap;
+      justify-content: center;
+      padding: 24px 20px 10px;
+    }
+
+    .btn {
+      padding: 13px 26px;
+      border: none; border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      letter-spacing: 0.3px;
+    }
+    .btn:hover  { transform: translateY(-2px); filter: brightness(1.1); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-shuffle {
+      background: linear-gradient(135deg, #ff6b9d, #c770f0);
+      color: white;
+      box-shadow: 0 4px 20px rgba(199,112,240,0.45);
+    }
+    .btn-auto {
+      background: rgba(255,255,255,0.1);
+      color: #e0b0f8;
+      border: 1.5px solid rgba(199,112,240,0.4);
+    }
+    .btn-auto.active {
+      background: linear-gradient(135deg, #7c3aed, #4f1d96);
+      color: white; border-color: transparent;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.45);
+    }
+    .btn-back {
+      background: rgba(255,255,255,0.08);
+      color: #c0a0d8;
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+
+    /* ── Photo tooltip on hover ── */
+    .cell-tooltip {
+      position: fixed;
+      background: rgba(20,0,40,0.92);
+      color: white; border-radius: 10px;
+      padding: 8px 14px; font-size: 0.82rem; font-weight: 700;
+      pointer-events: none; z-index: 100;
+      border: 1px solid rgba(199,112,240,0.4);
+      white-space: nowrap;
+      opacity: 0; transition: opacity 0.2s;
+    }
+
+    /* ── Loading ── */
+    .show-loading {
+      position: relative; z-index: 1;
+      text-align: center; padding: 80px 20px;
+      color: #c0a0d8; font-size: 1.1rem;
+    }
+    .show-loading .spin {
+      font-size: 2.5rem;
+      display: inline-block;
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer note ── */
+    .show-note {
+      position: relative; z-index: 1;
+      color: #6040a0; font-size: 0.78rem;
+      padding: 20px; text-align: center;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.9); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-inner { position: relative; max-width: 90vw; }
+    .lightbox-inner img { max-width: 100%; max-height: 82vh; border-radius: 16px; display: block; box-shadow: 0 0 40px rgba(199,112,240,0.5); }
+    .lightbox-close {
+      position: absolute; top: -14px; right: -14px;
+      background: white; border: none; border-radius: 50%;
+      width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #333;
+    }
+    .lightbox-caption { text-align: center; color: #e0b0f8; margin-top: 10px; font-weight: 700; font-size: 0.9rem; }
+
+    @media (max-width: 480px) {
+      .controls { gap: 10px; }
+      .btn { padding: 11px 20px; font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<div class="show-header">
+  <h1>Happy Birthday Tùng Chi! 🌸</h1>
+  <p>💕 Những khoảnh khắc yêu thương ghép lại thành tên em 💕</p>
+</div>
+
+<div id="show-content">
+  <div class="show-loading">
+    <div class="spin">🌸</div>
+    <div style="margin-top:14px">Đang tải ảnh...</div>
+  </div>
+</div>
+
+<div class="controls" id="controls" style="display:none">
+  <button class="btn btn-shuffle" id="btn-shuffle">🔀 Shuffle</button>
+  <button class="btn btn-auto"    id="btn-auto">▶ Tự động</button>
+  <button class="btn btn-back"    id="btn-back">← Quay lại</button>
+</div>
+
+<div class="show-note" id="show-note" style="display:none">
+  Nhấn vào ô ảnh để xem lớn · <span id="photo-note"></span>
+</div>
+
+<!-- Tooltip -->
+<div class="cell-tooltip" id="cell-tooltip"></div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightbox-close">✕</button>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── Letter pixel maps (10 rows × cols) ────────────────────────────────────
+// Grid: C(cols 0-5) | gap(6) | H(cols 7-12) | gap(13) | I(cols 14-17)
+
+const LETTER_C = [
+  [0,1,1,1,1,0],
+  [1,1,0,0,1,1],
+  [1,1,0,0,0,0],
+  [1,0,0,0,0,0],
+  [1,0,0,0,0,0],
+  [1,0,0,0,0,0],
+  [1,0,0,0,0,0],
+  [1,1,0,0,0,0],
+  [1,1,0,0,1,1],
+  [0,1,1,1,1,0],
+];
+
+const LETTER_H = [
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,1,1,1,1,1],
+  [1,1,1,1,1,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+];
+
+const LETTER_I = [
+  [1,1,1,1],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [0,1,1,0],
+  [1,1,1,1],
+];
+
+// Build a flat array of { row, col, letter } for all filled cells
+const ROWS = 10, COLS = 18;
+const filledCells = []; // { row, col }
+
+for (let r = 0; r < ROWS; r++) {
+  // C: cols 0-5
+  for (let c = 0; c < 6; c++) {
+    if (LETTER_C[r][c]) filledCells.push({ row: r, col: c });
+  }
+  // H: cols 7-12
+  for (let c = 0; c < 6; c++) {
+    if (LETTER_H[r][c]) filledCells.push({ row: r, col: c + 7 });
+  }
+  // I: cols 14-17
+  for (let c = 0; c < 4; c++) {
+    if (LETTER_I[r][c]) filledCells.push({ row: r, col: c + 14 });
+  }
+}
+
+// ── Supabase ──────────────────────────────────────────────────────────────
+const sb = window.supabase.createClient(
+  'https://wotqkykbpnoxjkfthbkn.supabase.co',
+  'sb_publishable_rzafCHztg-THj0YRnSpD0w_DXB1_vde'
+);
+
+let photos = [];
+let assignment = []; // assignment[i] = index in photos for filledCells[i]
+let autoTimer = null;
+
+async function init() {
+  const { data } = await sb.from('photos').select('*').order('created_at', { ascending: false });
+  photos = data || [];
+
+  if (photos.length === 0) {
+    document.getElementById('show-content').innerHTML = `
+      <div class="show-loading" style="padding:60px 20px">
+        <div style="font-size:2.5rem">📷</div>
+        <div style="margin-top:14px;color:#a080c8">Chưa có ảnh nào được chia sẻ.<br>Hãy quay lại sau nhé!</div>
+      </div>`;
+    document.getElementById('controls').style.display = 'flex';
+    document.getElementById('btn-shuffle').style.display = 'none';
+    document.getElementById('btn-auto').style.display = 'none';
+    document.getElementById('btn-back').style.display = 'inline-flex';
+    return;
+  }
+
+  buildAssignment();
+  renderMosaic();
+  document.getElementById('controls').style.display = 'flex';
+  document.getElementById('show-note').style.display = 'block';
+  document.getElementById('photo-note').textContent = `${photos.length} ảnh · ${filledCells.length} ô`;
+}
+
+function buildAssignment() {
+  // Shuffle photos array then assign cyclically to cells
+  const shuffled = [...Array(photos.length).keys()];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  assignment = filledCells.map((_, i) => shuffled[i % shuffled.length]);
+}
+
+function renderMosaic(animate = true) {
+  const grid = document.createElement('div');
+  grid.className = 'chi-grid';
+
+  // Create all 18×10 cells
+  const cellMap = {}; // 'r_c' -> element
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const div = document.createElement('div');
+      div.className = 'cell empty';
+      div.style.gridRow    = r + 1;
+      div.style.gridColumn = c + 1;
+      grid.appendChild(div);
+      cellMap[`${r}_${c}`] = div;
+    }
+  }
+
+  // Fill letter cells with photos
+  filledCells.forEach((fc, i) => {
+    const div = cellMap[`${fc.row}_${fc.col}`];
+    const p = photos[assignment[i]];
+    div.className = 'cell';
+    if (animate) div.style.animationDelay = (i * 18) + 'ms';
+
+    const img = document.createElement('img');
+    img.src = p.url;
+    img.alt = p.name;
+    img.loading = 'lazy';
+    div.appendChild(img);
+
+    // Tooltip
+    div.addEventListener('mouseenter', e => showTooltip(e, p));
+    div.addEventListener('mousemove',  e => moveTooltip(e));
+    div.addEventListener('mouseleave', hideTooltip);
+
+    // Lightbox
+    div.addEventListener('click', () => openLightbox(p));
+  });
+
+  const wrap = document.createElement('div');
+  wrap.className = 'mosaic-wrap';
+  wrap.appendChild(grid);
+
+  document.getElementById('show-content').innerHTML = '';
+  document.getElementById('show-content').appendChild(wrap);
+}
+
+function shuffle() {
+  buildAssignment();
+
+  // Animate cells flipping
+  const cells = document.querySelectorAll('.chi-grid .cell:not(.empty)');
+  const arr = Array.from(cells);
+
+  arr.forEach((cell, i) => {
+    const p = photos[assignment[i]];
+    setTimeout(() => {
+      cell.classList.add('flipping');
+      setTimeout(() => {
+        const img = cell.querySelector('img');
+        if (img) img.src = p.url;
+        cell.classList.remove('flipping');
+
+        // rebind tooltip & lightbox
+        cell.replaceWith(cell.cloneNode(true));
+      }, 250);
+    }, i * 15);
+  });
+
+  // re-bind events after all flips
+  setTimeout(() => {
+    const newCells = document.querySelectorAll('.chi-grid .cell:not(.empty)');
+    Array.from(newCells).forEach((cell, i) => {
+      const p = photos[assignment[i]];
+      cell.addEventListener('mouseenter', e => showTooltip(e, p));
+      cell.addEventListener('mousemove',  e => moveTooltip(e));
+      cell.addEventListener('mouseleave', hideTooltip);
+      cell.addEventListener('click', () => openLightbox(p));
+    });
+  }, filledCells.length * 15 + 300);
+}
+
+// ── Auto shuffle ──────────────────────────────────────────────────────────
+document.getElementById('btn-shuffle').addEventListener('click', shuffle);
+
+document.getElementById('btn-auto').addEventListener('click', () => {
+  const btn = document.getElementById('btn-auto');
+  if (autoTimer) {
+    clearInterval(autoTimer); autoTimer = null;
+    btn.classList.remove('active'); btn.textContent = '▶ Tự động';
+  } else {
+    shuffle();
+    autoTimer = setInterval(shuffle, 3500);
+    btn.classList.add('active'); btn.textContent = '⏸ Dừng';
+  }
+});
+
+document.getElementById('btn-back').addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
+
+// ── Tooltip ───────────────────────────────────────────────────────────────
+const tooltip = document.getElementById('cell-tooltip');
+
+function showTooltip(e, p) {
+  tooltip.textContent = p.message ? `${p.name} — "${p.message}"` : p.name;
+  tooltip.style.opacity = '1';
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top  = (e.clientY - 36) + 'px';
+}
+function hideTooltip() { tooltip.style.opacity = '0'; }
+
+// ── Lightbox ──────────────────────────────────────────────────────────────
+const lightbox  = document.getElementById('lightbox');
+const lbImg     = document.getElementById('lightbox-img');
+const lbCapt    = document.getElementById('lightbox-caption');
+const lbClose   = document.getElementById('lightbox-close');
+
+function openLightbox(p) {
+  lbImg.src = p.url;
+  lbCapt.textContent = p.message ? `${p.name} — "${p.message}"` : `💕 ${p.name}`;
+  lightbox.classList.add('open');
+}
+lbClose.addEventListener('click', () => lightbox.classList.remove('open'));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+
+// ── Stars background ──────────────────────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const stars = [];
+
+  function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  window.addEventListener('resize', resize); resize();
+
+  for (let i = 0; i < 160; i++) {
+    stars.push({
+      x: Math.random(), y: Math.random(),
+      r: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.0003 + 0.0001,
+      opacity: Math.random() * 0.7 + 0.2,
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 0.04 + 0.01,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.twinkle += s.twinkleSpeed;
+      const op = s.opacity * (0.5 + 0.5 * Math.sin(s.twinkle));
+      ctx.beginPath();
+      ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,220,255,${op})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── Start ─────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
