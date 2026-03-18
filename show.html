@@ -54,10 +54,19 @@
     .photo-cell.visible {
       animation: cellPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
+    /* Smooth fade-scale for C letter cells */
+    .photo-cell.visible.smooth {
+      animation: cellPopSmooth 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
     @keyframes cellPop {
       0%   { opacity: 0; transform: scale(0.25) rotate(12deg); }
       65%  { opacity: 1; transform: scale(1.1)  rotate(-2deg); }
       100% { opacity: 1; transform: scale(1)    rotate(0deg); }
+    }
+    @keyframes cellPopSmooth {
+      0%   { opacity: 0; transform: scale(0.5) translateY(6px); }
+      60%  { opacity: 1; transform: scale(1.04) translateY(-1px); }
+      100% { opacity: 1; transform: scale(1)    translateY(0); }
     }
     .photo-cell img {
       width: 100%; height: 100%;
@@ -204,9 +213,26 @@ const OFFSETS     = { C: 0, H: 8, I: 16 };
 const TOTAL_COLS  = 20;
 const ROWS        = 10;
 
-// Build ordered cell list: C → H → I, each letter top-to-bottom left-to-right
+// C trace order: top arc (right→left) → left side (top→bottom) → bottom arc (left→right)
+function cTraceOrder(r, c) {
+  if (r <= 1)  return r * 10 + (6 - c);          // top: right to left
+  if (r <= 7)  return 20 + (r - 2) * 3 + c;      // left side: top to bottom
+  return 44 + (r - 8) * 10 + c;                   // bottom: left to right
+}
+
+// Build ordered cell list: C (traced) → H → I
 const allCells = [];
-['C','H','I'].forEach(letter => {
+// C — sorted by trace path
+const cCells = [];
+const cMap = MAPS.C, cOff = OFFSETS.C;
+for (let r = 0; r < ROWS; r++)
+  for (let c = 0; c < cMap[r].length; c++)
+    if (cMap[r][c]) cCells.push({ row: r, col: c + cOff, letter: 'C', order: cTraceOrder(r, c) });
+cCells.sort((a, b) => a.order - b.order);
+cCells.forEach(fc => allCells.push(fc));
+
+// H and I — normal top-to-bottom left-to-right
+['H','I'].forEach(letter => {
   const map = MAPS[letter], off = OFFSETS[letter];
   for (let r = 0; r < ROWS; r++)
     for (let c = 0; c < map[r].length; c++)
@@ -302,8 +328,8 @@ function setCellPhoto(idx, p) {
 }
 
 // ── Animate build: C → H → I, each cell pops in order ────────────────────
-const DELAY_PER_CELL = 20;   // ms — 3× faster than original 60ms
-const LETTER_PAUSE   = 100;  // ms pause between letters
+const DELAY_PER_CELL = 50;   // ms (40% of 20ms speed → 50ms)
+const LETTER_PAUSE   = 250;  // ms pause between letters
 
 function animateBuild(onDone) {
   refillQueue();
@@ -317,7 +343,12 @@ function animateBuild(onDone) {
     prevLetter = fc.letter;
 
     const delay = t;
-    setTimeout(() => cellEls[i].classList.add('visible'), delay);
+    const isC   = fc.letter === 'C';
+    setTimeout(() => {
+      const el = cellEls[i];
+      el.classList.add('visible');
+      if (isC) el.classList.add('smooth');
+    }, delay);
     t += DELAY_PER_CELL;
   });
 
@@ -360,7 +391,7 @@ function shuffleAll() {
       el.classList.add('swapping');
       const p = nextPhoto();
       setTimeout(() => { setCellPhoto(i, p); el.classList.remove('swapping'); }, 190);
-    }, i * 7);
+    }, i * 18);
   });
 }
 
@@ -371,7 +402,7 @@ document.getElementById('btn-shuffle').addEventListener('click', () => {
 
 const btnAuto = document.getElementById('btn-auto');
 function startAuto() {
-  swapCycle = setInterval(swapOne, 400); // 3× faster: was 1200ms
+  swapCycle = setInterval(swapOne, 1000); // 40% of 400ms → 1000ms
   btnAuto.classList.add('active'); btnAuto.textContent = '⏸ Dừng';
 }
 function stopAuto() {
