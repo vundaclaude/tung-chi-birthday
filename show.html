@@ -7,11 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@600;700;800&display=swap');
 
-    :root {
-      --cell: clamp(28px, 4.2vw, 56px);
-      --gap:  clamp(3px,  0.5vw, 6px);
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -25,187 +20,160 @@
       align-items: center;
     }
 
-    /* ── Stars ── */
     #stars-canvas {
       position: fixed; inset: 0;
       pointer-events: none; z-index: 0;
     }
 
-    /* ── Header ── */
     .show-header {
       position: relative; z-index: 1;
       text-align: center;
-      padding: 44px 20px 20px;
+      padding: 40px 20px 16px;
     }
     .show-header h1 {
       font-family: 'Dancing Script', cursive;
-      font-size: clamp(2rem, 6vw, 4rem);
+      font-size: clamp(1.8rem, 5.5vw, 3.8rem);
       background: linear-gradient(135deg, #ff9ed2, #c770f0, #ffd700);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(0 0 20px rgba(199,112,240,0.6));
+      filter: drop-shadow(0 0 18px rgba(199,112,240,0.6));
       margin-bottom: 6px;
     }
-    .show-header p {
-      color: #d0a0e8; font-size: clamp(0.85rem, 2vw, 1rem); font-weight: 600;
-    }
+    .show-header p { color: #d0a0e8; font-size: clamp(0.8rem, 1.8vw, 0.95rem); font-weight: 600; }
 
-    /* ── Mosaic wrapper ── */
+    /* mosaic container uses absolute positioning */
     .mosaic-wrap {
       position: relative; z-index: 1;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
+      padding: 16px 20px;
+      display: flex; justify-content: center;
     }
-
-    /* ── The letter grid ── */
-    .chi-grid {
-      display: grid;
-      grid-template-columns: repeat(18, var(--cell));
-      grid-template-rows:    repeat(10, var(--cell));
-      gap: var(--gap);
-    }
-
-    /* ── Each photo cell ── */
-    .cell {
-      width: var(--cell); height: var(--cell);
-      border-radius: clamp(4px, 0.8vw, 10px);
-      overflow: hidden;
+    #mosaic-stage {
       position: relative;
+      /* width & height set by JS */
+    }
+
+    /* individual photo cell */
+    .photo-cell {
+      position: absolute;
+      overflow: hidden;
       cursor: pointer;
-      animation: cellIn 0.6s ease both;
+      /* size & position set by JS */
+      opacity: 0;
+      transform: scale(0.3) rotate(10deg);
+      transition: box-shadow 0.25s;
     }
-    .cell.empty { pointer-events: none; }
-
-    @keyframes cellIn {
-      from { opacity: 0; transform: scale(0.4) rotate(8deg); }
-      to   { opacity: 1; transform: scale(1)   rotate(0deg); }
+    .photo-cell.visible {
+      animation: cellPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes cellPop {
+      0%   { opacity: 0; transform: scale(0.3) rotate(10deg); }
+      70%  { opacity: 1; transform: scale(1.08) rotate(-2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
-    .cell img {
+    .photo-cell img {
       width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
+      object-fit: cover; display: block;
+      transition: transform 0.35s ease;
     }
-    .cell:hover img { transform: scale(1.12); }
+    .photo-cell:hover img { transform: scale(1.12); }
 
-    /* glow ring */
-    .cell::after {
+    /* glow ring on hover */
+    .photo-cell::after {
       content: '';
       position: absolute; inset: 0;
       border-radius: inherit;
-      box-shadow: inset 0 0 0 1.5px rgba(255,150,220,0.35);
-      transition: box-shadow 0.3s;
+      box-shadow: inset 0 0 0 1.5px rgba(255,150,220,0.3);
+      transition: box-shadow 0.25s;
+      pointer-events: none;
     }
-    .cell:hover::after {
-      box-shadow: inset 0 0 0 2px rgba(255,107,157,0.9),
-                  0 0 14px rgba(255,107,157,0.6);
-    }
-
-    /* flip animation on shuffle */
-    .cell.flipping {
-      animation: flipCell 0.5s ease both;
-    }
-    @keyframes flipCell {
-      0%   { transform: rotateY(0deg)   scale(1); }
-      50%  { transform: rotateY(90deg)  scale(0.8); opacity: 0.4; }
-      100% { transform: rotateY(0deg)   scale(1); opacity: 1; }
+    .photo-cell:hover::after {
+      box-shadow: inset 0 0 0 2px rgba(255,107,157,1),
+                  0 0 16px rgba(255,107,157,0.6);
     }
 
-    /* ── Controls ── */
+    /* flip-in for photo swap */
+    .photo-cell.swapping {
+      animation: cellSwap 0.5s ease forwards;
+    }
+    @keyframes cellSwap {
+      0%   { transform: scale(1) rotateY(0deg);   opacity: 1; }
+      40%  { transform: scale(0.85) rotateY(90deg); opacity: 0.3; }
+      100% { transform: scale(1) rotateY(0deg);   opacity: 1; }
+    }
+
+    /* controls */
     .controls {
       position: relative; z-index: 1;
-      display: flex; gap: 14px; flex-wrap: wrap;
+      display: flex; gap: 12px; flex-wrap: wrap;
       justify-content: center;
-      padding: 24px 20px 10px;
+      padding: 20px 20px 8px;
     }
-
     .btn {
-      padding: 13px 26px;
-      border: none; border-radius: 50px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.95rem; font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
-      letter-spacing: 0.3px;
+      padding: 12px 24px; border: none; border-radius: 50px;
+      font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.3px;
+      transition: transform 0.15s, filter 0.15s;
     }
-    .btn:hover  { transform: translateY(-2px); filter: brightness(1.1); }
+    .btn:hover  { transform: translateY(-2px); filter: brightness(1.12); }
     .btn:active { transform: translateY(0); }
-
     .btn-shuffle {
       background: linear-gradient(135deg, #ff6b9d, #c770f0);
-      color: white;
-      box-shadow: 0 4px 20px rgba(199,112,240,0.45);
+      color: white; box-shadow: 0 4px 20px rgba(199,112,240,0.4);
     }
     .btn-auto {
-      background: rgba(255,255,255,0.1);
-      color: #e0b0f8;
+      background: rgba(255,255,255,0.1); color: #e0b0f8;
       border: 1.5px solid rgba(199,112,240,0.4);
     }
     .btn-auto.active {
       background: linear-gradient(135deg, #7c3aed, #4f1d96);
       color: white; border-color: transparent;
-      box-shadow: 0 4px 20px rgba(124,58,237,0.45);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
     }
     .btn-back {
-      background: rgba(255,255,255,0.08);
-      color: #c0a0d8;
-      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.07); color: #c0a0d8;
+      border: 1.5px solid rgba(255,255,255,0.12);
     }
 
-    /* ── Photo tooltip on hover ── */
-    .cell-tooltip {
-      position: fixed;
-      background: rgba(20,0,40,0.92);
-      color: white; border-radius: 10px;
-      padding: 8px 14px; font-size: 0.82rem; font-weight: 700;
-      pointer-events: none; z-index: 100;
-      border: 1px solid rgba(199,112,240,0.4);
-      white-space: nowrap;
-      opacity: 0; transition: opacity 0.2s;
-    }
-
-    /* ── Loading ── */
-    .show-loading {
-      position: relative; z-index: 1;
-      text-align: center; padding: 80px 20px;
-      color: #c0a0d8; font-size: 1.1rem;
-    }
-    .show-loading .spin {
-      font-size: 2.5rem;
-      display: inline-block;
-      animation: spin 1.2s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Footer note ── */
     .show-note {
       position: relative; z-index: 1;
-      color: #6040a0; font-size: 0.78rem;
-      padding: 20px; text-align: center;
+      color: #5a3880; font-size: 0.75rem;
+      padding: 12px 20px 24px; text-align: center;
     }
 
-    /* ── Lightbox ── */
+    /* tooltip */
+    .cell-tooltip {
+      position: fixed;
+      background: rgba(15,0,35,0.94); color: white;
+      border-radius: 10px; padding: 7px 13px;
+      font-size: 0.8rem; font-weight: 700;
+      pointer-events: none; z-index: 200;
+      border: 1px solid rgba(199,112,240,0.4);
+      white-space: nowrap; opacity: 0; transition: opacity 0.15s;
+    }
+
+    /* lightbox */
     .lightbox {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.9); z-index: 1000;
       align-items: center; justify-content: center; padding: 20px;
     }
     .lightbox.open { display: flex; }
-    .lightbox-inner { position: relative; max-width: 90vw; }
-    .lightbox-inner img { max-width: 100%; max-height: 82vh; border-radius: 16px; display: block; box-shadow: 0 0 40px rgba(199,112,240,0.5); }
-    .lightbox-close {
+    .lb-inner { position: relative; max-width: 90vw; }
+    .lb-inner img { max-width: 100%; max-height: 82vh; border-radius: 16px; display: block; box-shadow: 0 0 40px rgba(199,112,240,0.5); }
+    .lb-close {
       position: absolute; top: -14px; right: -14px;
       background: white; border: none; border-radius: 50%;
       width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center; color: #333;
     }
-    .lightbox-caption { text-align: center; color: #e0b0f8; margin-top: 10px; font-weight: 700; font-size: 0.9rem; }
+    .lb-caption { text-align: center; color: #e0b0f8; margin-top: 10px; font-weight: 700; font-size: 0.88rem; }
 
-    @media (max-width: 480px) {
-      .controls { gap: 10px; }
-      .btn { padding: 11px 20px; font-size: 0.88rem; }
+    .loading-msg {
+      position: relative; z-index: 1;
+      text-align: center; padding: 80px 20px; color: #b090d8;
     }
+    .spin { font-size: 2.4rem; display: inline-block; animation: spin 1.2s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -217,298 +185,369 @@
   <p>💕 Những khoảnh khắc yêu thương ghép lại thành tên em 💕</p>
 </div>
 
-<div id="show-content">
-  <div class="show-loading">
-    <div class="spin">🌸</div>
-    <div style="margin-top:14px">Đang tải ảnh...</div>
-  </div>
+<div class="mosaic-wrap">
+  <div id="mosaic-stage"></div>
+</div>
+
+<div id="loading-msg" class="loading-msg">
+  <div class="spin">🌸</div>
+  <div style="margin-top:12px">Đang tải ảnh...</div>
 </div>
 
 <div class="controls" id="controls" style="display:none">
   <button class="btn btn-shuffle" id="btn-shuffle">🔀 Shuffle</button>
   <button class="btn btn-auto"    id="btn-auto">▶ Tự động</button>
-  <button class="btn btn-back"    id="btn-back">← Quay lại</button>
+  <button class="btn btn-back"    onclick="location.href='index.html'">← Quay lại</button>
 </div>
 
-<div class="show-note" id="show-note" style="display:none">
-  Nhấn vào ô ảnh để xem lớn · <span id="photo-note"></span>
-</div>
+<div class="show-note" id="show-note" style="display:none"></div>
 
-<!-- Tooltip -->
 <div class="cell-tooltip" id="cell-tooltip"></div>
 
-<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
-  <div class="lightbox-inner">
-    <button class="lightbox-close" id="lightbox-close">✕</button>
-    <img id="lightbox-img" src="" alt="" />
-    <div class="lightbox-caption" id="lightbox-caption"></div>
+  <div class="lb-inner">
+    <button class="lb-close" id="lb-close">✕</button>
+    <img id="lb-img" src="" alt="" />
+    <div class="lb-caption" id="lb-caption"></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ── Letter pixel maps (10 rows × cols) ────────────────────────────────────
-// Grid: C(cols 0-5) | gap(6) | H(cols 7-12) | gap(13) | I(cols 14-17)
+// ── Letter pixel maps (10 rows) ────────────────────────────────────────────
+const MAPS = {
+  C: [
+    [0,1,1,1,1,0],
+    [1,1,0,0,1,1],
+    [1,1,0,0,0,0],
+    [1,0,0,0,0,0],
+    [1,0,0,0,0,0],
+    [1,0,0,0,0,0],
+    [1,0,0,0,0,0],
+    [1,1,0,0,0,0],
+    [1,1,0,0,1,1],
+    [0,1,1,1,1,0],
+  ],
+  H: [
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,1,1,1,1,1],
+    [1,1,1,1,1,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+  ],
+  I: [
+    [1,1,1,1],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [0,1,1,0],
+    [1,1,1,1],
+  ],
+};
 
-const LETTER_C = [
-  [0,1,1,1,1,0],
-  [1,1,0,0,1,1],
-  [1,1,0,0,0,0],
-  [1,0,0,0,0,0],
-  [1,0,0,0,0,0],
-  [1,0,0,0,0,0],
-  [1,0,0,0,0,0],
-  [1,1,0,0,0,0],
-  [1,1,0,0,1,1],
-  [0,1,1,1,1,0],
-];
+// Col offsets: C at 0, H at 7, I at 14
+const OFFSETS = { C: 0, H: 7, I: 14 };
+const ROWS = 10, TOTAL_COLS = 18;
 
-const LETTER_H = [
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-  [1,1,1,1,1,1],
-  [1,1,1,1,1,1],
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-  [1,0,0,0,0,1],
-];
-
-const LETTER_I = [
-  [1,1,1,1],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [0,1,1,0],
-  [1,1,1,1],
-];
-
-// Build a flat array of { row, col, letter } for all filled cells
-const ROWS = 10, COLS = 18;
-const filledCells = []; // { row, col }
-
-for (let r = 0; r < ROWS; r++) {
-  // C: cols 0-5
-  for (let c = 0; c < 6; c++) {
-    if (LETTER_C[r][c]) filledCells.push({ row: r, col: c });
+// Build ordered list of cells: C cells first, then H, then I
+// Within each letter: top-to-bottom, left-to-right
+const allCells = []; // { row, col, letter }
+['C','H','I'].forEach(letter => {
+  const map = MAPS[letter];
+  const off = OFFSETS[letter];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < map[r].length; c++) {
+      if (map[r][c]) allCells.push({ row: r, col: c + off, letter });
+    }
   }
-  // H: cols 7-12
-  for (let c = 0; c < 6; c++) {
-    if (LETTER_H[r][c]) filledCells.push({ row: r, col: c + 7 });
-  }
-  // I: cols 14-17
-  for (let c = 0; c < 4; c++) {
-    if (LETTER_I[r][c]) filledCells.push({ row: r, col: c + 14 });
-  }
-}
+});
 
-// ── Supabase ──────────────────────────────────────────────────────────────
+// ── Supabase ───────────────────────────────────────────────────────────────
 const sb = window.supabase.createClient(
   'https://wotqkykbpnoxjkfthbkn.supabase.co',
   'sb_publishable_rzafCHztg-THj0YRnSpD0w_DXB1_vde'
 );
 
+// ── State ──────────────────────────────────────────────────────────────────
 let photos = [];
-let assignment = []; // assignment[i] = index in photos for filledCells[i]
+let photoQueue = [];   // shuffled queue — use all before repeating
+let cellEls = [];      // DOM elements, parallel to allCells
 let autoTimer = null;
+let swapCycle = null;
+let buildDone = false;
 
-async function init() {
-  const { data } = await sb.from('photos').select('*').order('created_at', { ascending: false });
-  photos = data || [];
-
-  if (photos.length === 0) {
-    document.getElementById('show-content').innerHTML = `
-      <div class="show-loading" style="padding:60px 20px">
-        <div style="font-size:2.5rem">📷</div>
-        <div style="margin-top:14px;color:#a080c8">Chưa có ảnh nào được chia sẻ.<br>Hãy quay lại sau nhé!</div>
-      </div>`;
-    document.getElementById('controls').style.display = 'flex';
-    document.getElementById('btn-shuffle').style.display = 'none';
-    document.getElementById('btn-auto').style.display = 'none';
-    document.getElementById('btn-back').style.display = 'inline-flex';
-    return;
-  }
-
-  buildAssignment();
-  renderMosaic();
-  document.getElementById('controls').style.display = 'flex';
-  document.getElementById('show-note').style.display = 'block';
-  document.getElementById('photo-note').textContent = `${photos.length} ảnh · ${filledCells.length} ô`;
-}
-
-function buildAssignment() {
-  // Shuffle photos array then assign cyclically to cells
-  const shuffled = [...Array(photos.length).keys()];
-  for (let i = shuffled.length - 1; i > 0; i--) {
+// ── Photo queue (use all before repeat) ───────────────────────────────────
+function fillQueue() {
+  // Fisher-Yates shuffle into queue
+  const arr = photos.map((_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  assignment = filledCells.map((_, i) => shuffled[i % shuffled.length]);
+  photoQueue = arr;
+}
+function nextPhoto() {
+  if (photoQueue.length === 0) fillQueue();
+  return photos[photoQueue.shift()];
 }
 
-function renderMosaic(animate = true) {
-  const grid = document.createElement('div');
-  grid.className = 'chi-grid';
+// ── Layout ─────────────────────────────────────────────────────────────────
+function computeCell() {
+  const maxW = Math.min(window.innerWidth - 32, 1100);
+  const size = Math.max(20, Math.floor(maxW / TOTAL_COLS) - 2);
+  const gap  = Math.max(2, Math.round(size * 0.08));
+  return { size, gap };
+}
 
-  // Only render filled letter cells — no empty placeholders
-  filledCells.forEach((fc, i) => {
-    const div = document.createElement('div');
-    div.style.gridRow    = fc.row + 1;
-    div.style.gridColumn = fc.col + 1;
-    const p = photos[assignment[i]];
-    div.className = 'cell';
-    if (animate) div.style.animationDelay = (i * 18) + 'ms';
+// ── Build mosaic DOM ───────────────────────────────────────────────────────
+function buildStage() {
+  const stage = document.getElementById('mosaic-stage');
+  stage.innerHTML = '';
+  cellEls = [];
+
+  const { size, gap } = computeCell();
+  const stageW = TOTAL_COLS * size + (TOTAL_COLS - 1) * gap;
+  const stageH = ROWS       * size + (ROWS       - 1) * gap;
+  stage.style.width  = stageW + 'px';
+  stage.style.height = stageH + 'px';
+
+  const radius = Math.max(4, Math.round(size * 0.15)) + 'px';
+
+  allCells.forEach(fc => {
+    const el = document.createElement('div');
+    el.className = 'photo-cell';
+    el.style.width        = size + 'px';
+    el.style.height       = size + 'px';
+    el.style.borderRadius = radius;
+    el.style.left = (fc.col * (size + gap)) + 'px';
+    el.style.top  = (fc.row * (size + gap)) + 'px';
 
     const img = document.createElement('img');
-    img.src = p.url;
-    img.alt = p.name;
     img.loading = 'lazy';
-    div.appendChild(img);
-
-    // Tooltip
-    div.addEventListener('mouseenter', e => showTooltip(e, p));
-    div.addEventListener('mousemove',  e => moveTooltip(e));
-    div.addEventListener('mouseleave', hideTooltip);
-
-    // Lightbox
-    div.addEventListener('click', () => openLightbox(p));
+    el.appendChild(img);
+    stage.appendChild(el);
+    cellEls.push(el);
   });
 
-  const wrap = document.createElement('div');
-  wrap.className = 'mosaic-wrap';
-  wrap.appendChild(grid);
-
-  document.getElementById('show-content').innerHTML = '';
-  document.getElementById('show-content').appendChild(wrap);
+  return { size, gap };
 }
 
-function shuffle() {
-  buildAssignment();
+// ── Animate build: letter by letter ───────────────────────────────────────
+function animateBuild(onDone) {
+  fillQueue();
 
-  // Animate cells flipping
-  const cells = document.querySelectorAll('.chi-grid .cell');
-  const arr = Array.from(cells);
+  // Assign one photo per cell from queue, letter order
+  const DELAY_PER_CELL = 60; // ms between each cell popping in
+  const LETTER_PAUSE   = 300; // extra pause between letters
 
-  arr.forEach((cell, i) => {
-    const p = photos[assignment[i]];
+  let t = 0;
+  let prevLetter = null;
+
+  cellEls.forEach((el, i) => {
+    const fc  = allCells[i];
+    const img = el.querySelector('img');
+    const p   = nextPhoto();
+    img.src   = p.url;
+    bindCell(el, p);
+
+    if (prevLetter && fc.letter !== prevLetter) t += LETTER_PAUSE;
+    prevLetter = fc.letter;
+
     setTimeout(() => {
-      cell.classList.add('flipping');
-      setTimeout(() => {
-        const img = cell.querySelector('img');
-        if (img) img.src = p.url;
-        cell.classList.remove('flipping');
+      el.classList.add('visible');
+    }, t);
 
-        // rebind tooltip & lightbox
-        cell.replaceWith(cell.cloneNode(true));
-      }, 250);
-    }, i * 15);
+    t += DELAY_PER_CELL;
   });
 
-  // re-bind events after all flips
   setTimeout(() => {
-    const newCells = document.querySelectorAll('.chi-grid .cell:not(.empty)');
-    Array.from(newCells).forEach((cell, i) => {
-      const p = photos[assignment[i]];
-      cell.addEventListener('mouseenter', e => showTooltip(e, p));
-      cell.addEventListener('mousemove',  e => moveTooltip(e));
-      cell.addEventListener('mouseleave', hideTooltip);
-      cell.addEventListener('click', () => openLightbox(p));
-    });
-  }, filledCells.length * 15 + 300);
+    buildDone = true;
+    onDone();
+  }, t + 400);
 }
 
-// ── Auto shuffle ──────────────────────────────────────────────────────────
-document.getElementById('btn-shuffle').addEventListener('click', shuffle);
+// ── Swap a single cell's photo ─────────────────────────────────────────────
+function swapCell(idx) {
+  const el  = cellEls[idx];
+  const img = el.querySelector('img');
+  const p   = nextPhoto();
+
+  el.classList.remove('swapping');
+  void el.offsetWidth; // reflow
+  el.classList.add('swapping');
+
+  setTimeout(() => {
+    img.src = p.url;
+    bindCell(el, p);
+    el.classList.remove('swapping');
+  }, 200);
+}
+
+// ── Bind tooltip + lightbox to a cell ─────────────────────────────────────
+function bindCell(el, p) {
+  const clone = el.cloneNode(false);
+  clone.appendChild(el.querySelector('img'));
+  el.replaceWith(clone);
+  cellEls[cellEls.indexOf(el)] = clone;
+
+  clone.addEventListener('mouseenter', e => showTip(e, p));
+  clone.addEventListener('mousemove',  e => moveTip(e));
+  clone.addEventListener('mouseleave', hideTip);
+  clone.addEventListener('click',      () => openLb(p));
+}
+
+// ── Shuffle all at once ────────────────────────────────────────────────────
+function shuffleAll() {
+  fillQueue();
+  cellEls.forEach((_, i) => {
+    setTimeout(() => swapCell(i), i * 20);
+  });
+}
+
+// ── Auto-swap: one random cell at a time ──────────────────────────────────
+let swapQueue = [];
+function startAutoSwap() {
+  if (swapQueue.length === 0) {
+    // randomize cell order
+    swapQueue = cellEls.map((_, i) => i);
+    for (let i = swapQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [swapQueue[i], swapQueue[j]] = [swapQueue[j], swapQueue[i]];
+    }
+  }
+  const idx = swapQueue.shift();
+  swapCell(idx);
+}
+
+// ── Controls ───────────────────────────────────────────────────────────────
+document.getElementById('btn-shuffle').addEventListener('click', () => {
+  if (!buildDone) return;
+  shuffleAll();
+});
 
 document.getElementById('btn-auto').addEventListener('click', () => {
+  if (!buildDone) return;
   const btn = document.getElementById('btn-auto');
-  if (autoTimer) {
-    clearInterval(autoTimer); autoTimer = null;
+  if (swapCycle) {
+    clearInterval(swapCycle); swapCycle = null;
     btn.classList.remove('active'); btn.textContent = '▶ Tự động';
   } else {
-    shuffle();
-    autoTimer = setInterval(shuffle, 3500);
+    swapCycle = setInterval(startAutoSwap, 800);
     btn.classList.add('active'); btn.textContent = '⏸ Dừng';
   }
 });
 
-document.getElementById('btn-back').addEventListener('click', () => {
-  window.location.href = 'index.html';
-});
-
-// ── Tooltip ───────────────────────────────────────────────────────────────
+// ── Tooltip ────────────────────────────────────────────────────────────────
 const tooltip = document.getElementById('cell-tooltip');
-
-function showTooltip(e, p) {
+function showTip(e, p) {
   tooltip.textContent = p.message ? `${p.name} — "${p.message}"` : p.name;
   tooltip.style.opacity = '1';
-  moveTooltip(e);
+  moveTip(e);
 }
-function moveTooltip(e) {
-  tooltip.style.left = (e.clientX + 12) + 'px';
-  tooltip.style.top  = (e.clientY - 36) + 'px';
+function moveTip(e) {
+  tooltip.style.left = (e.clientX + 14) + 'px';
+  tooltip.style.top  = (e.clientY - 40) + 'px';
 }
-function hideTooltip() { tooltip.style.opacity = '0'; }
+function hideTip() { tooltip.style.opacity = '0'; }
 
-// ── Lightbox ──────────────────────────────────────────────────────────────
-const lightbox  = document.getElementById('lightbox');
-const lbImg     = document.getElementById('lightbox-img');
-const lbCapt    = document.getElementById('lightbox-caption');
-const lbClose   = document.getElementById('lightbox-close');
-
-function openLightbox(p) {
-  lbImg.src = p.url;
-  lbCapt.textContent = p.message ? `${p.name} — "${p.message}"` : `💕 ${p.name}`;
+// ── Lightbox ───────────────────────────────────────────────────────────────
+const lightbox = document.getElementById('lightbox');
+function openLb(p) {
+  document.getElementById('lb-img').src = p.url;
+  document.getElementById('lb-caption').textContent = p.message ? `${p.name} — "${p.message}"` : `💕 ${p.name}`;
   lightbox.classList.add('open');
 }
-lbClose.addEventListener('click', () => lightbox.classList.remove('open'));
+document.getElementById('lb-close').addEventListener('click', () => lightbox.classList.remove('open'));
 lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
 
-// ── Stars background ──────────────────────────────────────────────────────
-(function(){
-  const canvas = document.getElementById('stars-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H;
-  const stars = [];
+// ── Init ───────────────────────────────────────────────────────────────────
+async function init() {
+  const { data } = await sb.from('photos').select('*').order('created_at', { ascending: false });
+  photos = data || [];
 
-  function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
-  window.addEventListener('resize', resize); resize();
+  document.getElementById('loading-msg').style.display = 'none';
 
-  for (let i = 0; i < 160; i++) {
-    stars.push({
-      x: Math.random(), y: Math.random(),
-      r: Math.random() * 1.5 + 0.3,
-      speed: Math.random() * 0.0003 + 0.0001,
-      opacity: Math.random() * 0.7 + 0.2,
-      twinkle: Math.random() * Math.PI * 2,
-      twinkleSpeed: Math.random() * 0.04 + 0.01,
-    });
+  if (photos.length === 0) {
+    document.getElementById('mosaic-stage').innerHTML = `
+      <div style="color:#a080c8;text-align:center;padding:40px 20px;font-size:1rem">
+        📷 Chưa có ảnh nào.<br>Hãy chia sẻ ảnh trước nhé!
+      </div>`;
+    document.getElementById('controls').style.display = 'flex';
+    return;
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
+  buildStage();
+  document.getElementById('controls').style.display = 'flex';
+  document.getElementById('show-note').style.display = 'block';
+  document.getElementById('show-note').textContent =
+    `${photos.length} ảnh · ${allCells.length} ô · nhấn vào ảnh để xem lớn`;
+
+  animateBuild(() => {
+    // after build, start gentle auto-swap every 1.2s
+    swapCycle = setInterval(startAutoSwap, 1200);
+    const btn = document.getElementById('btn-auto');
+    btn.classList.add('active'); btn.textContent = '⏸ Dừng';
+  });
+}
+
+window.addEventListener('resize', () => {
+  if (photos.length === 0) return;
+  const stage = document.getElementById('mosaic-stage');
+  if (!stage.children.length) return;
+  const { size, gap } = computeCell();
+  const stageW = TOTAL_COLS * size + (TOTAL_COLS - 1) * gap;
+  const stageH = ROWS       * size + (ROWS       - 1) * gap;
+  stage.style.width  = stageW + 'px';
+  stage.style.height = stageH + 'px';
+  const radius = Math.max(4, Math.round(size * 0.15)) + 'px';
+  cellEls.forEach((el, i) => {
+    const fc = allCells[i];
+    el.style.width        = size + 'px';
+    el.style.height       = size + 'px';
+    el.style.borderRadius = radius;
+    el.style.left = (fc.col * (size + gap)) + 'px';
+    el.style.top  = (fc.row * (size + gap)) + 'px';
+  });
+});
+
+init();
+
+// ── Stars ──────────────────────────────────────────────────────────────────
+(function(){
+  const c = document.getElementById('stars-canvas');
+  const ctx = c.getContext('2d');
+  let W, H;
+  const stars = Array.from({length:180}, () => ({
+    x: Math.random(), y: Math.random(),
+    r: Math.random()*1.4+0.3,
+    tw: Math.random()*Math.PI*2,
+    ts: Math.random()*0.035+0.008,
+    op: Math.random()*0.65+0.2,
+  }));
+  function resize(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
     stars.forEach(s => {
-      s.twinkle += s.twinkleSpeed;
-      const op = s.opacity * (0.5 + 0.5 * Math.sin(s.twinkle));
+      s.tw += s.ts;
+      const a = s.op*(0.45+0.55*Math.sin(s.tw));
       ctx.beginPath();
-      ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,220,255,${op})`;
+      ctx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,210,255,${a})`;
       ctx.fill();
     });
     requestAnimationFrame(draw);
-  }
-  draw();
+  })();
 })();
-
-// ── Start ─────────────────────────────────────────────────────────────────
-init();
 </script>
 </body>
 </html>
