@@ -429,15 +429,28 @@
       progressBar.style.width = fakeProgress + '%';
     }, 150);
 
-    const { data: storageData, error: storageError } = await supabase
+    const uploadPromise = supabase
       .storage
       .from(STORAGE_BUCKET)
       .upload(filename, selectedFile, { cacheControl: '3600', upsert: false });
 
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Hết thời gian chờ — kiểm tra lại bucket Storage trong Supabase.')), 15000)
+    );
+
+    let storageData, storageError;
+    try {
+      const result = await Promise.race([uploadPromise, timeoutPromise]);
+      storageData = result.data;
+      storageError = result.error;
+    } catch (err) {
+      storageError = err;
+    }
+
     clearInterval(progressInterval);
 
     if (storageError) {
-      setStatus('Lỗi tải ảnh: ' + storageError.message, 'error');
+      setStatus('Lỗi: ' + (storageError.message || JSON.stringify(storageError)), 'error');
       uploadBtn.disabled = false;
       progressWrap.style.display = 'none';
       return;
