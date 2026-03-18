@@ -356,7 +356,7 @@
   const STORAGE_BUCKET  = 'photos'; // bucket name you create in Supabase Storage
   // ──────────────────────────────────────────────────────────────────────────
 
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // ── DOM refs ──────────────────────────────────────────────────────────────
   const dropZone      = document.getElementById('drop-zone');
@@ -429,7 +429,7 @@
       progressBar.style.width = fakeProgress + '%';
     }, 150);
 
-    const uploadPromise = supabase
+    const uploadPromise = sb
       .storage
       .from(STORAGE_BUCKET)
       .upload(filename, selectedFile, { cacheControl: '3600', upsert: false });
@@ -459,11 +459,11 @@
     progressBar.style.width = '92%';
 
     // 2. Get public URL
-    const { data: urlData } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
+    const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filename);
     const publicUrl = urlData.publicUrl;
 
     // 3. Save metadata to DB
-    const { error: dbError } = await supabase
+    const { error: dbError } = await sb
       .from('photos')
       .insert([{ name, message, url: publicUrl, created_at: new Date().toISOString() }]);
 
@@ -490,7 +490,7 @@
 
   // ── Load gallery ──────────────────────────────────────────────────────────
   async function loadGallery() {
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('photos')
       .select('*')
       .order('created_at', { ascending: false });
@@ -539,10 +539,10 @@
   }
 
   // ── Realtime subscription ─────────────────────────────────────────────────
-  supabase
+  sb
     .channel('photos-channel')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'photos' }, () => {
-      loadGallery(); // reload gallery when new photo is inserted
+      loadGallery();
     })
     .subscribe();
 
